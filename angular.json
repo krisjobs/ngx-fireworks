@@ -63,6 +63,16 @@
             ],
             "outputDir": "dist/storybook/fire-ngine"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/fire-ngine/**/*.ts",
+              "projects/fire-ngine/**/*.html"
+            ],
+            "eslintConfig": "projects/fire-ngine/eslint.config.js"
+          }
         }
       }
     },
@@ -157,6 +167,16 @@
               "projects/fire-books/src/styles.scss"
             ],
             "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/fire-books/**/*.ts",
+              "projects/fire-books/**/*.html"
+            ],
+            "eslintConfig": "projects/fire-books/eslint.config.js"
           }
         }
       }
