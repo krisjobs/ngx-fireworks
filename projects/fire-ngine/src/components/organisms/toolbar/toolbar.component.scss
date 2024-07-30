@@ -1,0 +1,36 @@
+.spacer {
+    flex: 1 1 auto;
+}
+
+mat-icon {
+    color: #5f6368;
+}
+
+mat-chip-list {
+    margin-left: 20px;
+}
+
+mat-button-toggle-group {
+    font-size: medium;
+}
+
+lib-menu,
+lib-filters {
+    margin-left: 15px;
+}
+
+mat-button-toggle-group {
+    margin-left: 15px;
+}
+
+.clear-filters-button {
+    color: rgba(255, 0, 0, 0.75) !important;
+}
+
+mat-toolbar.white-background {
+    background-color: white;
+}
+
+.toggle-sidenav-button {
+    margin-right: 15px;
+}

@@ -1,0 +1,61 @@
+<mat-card data-cy="module.overview.grid.card"
+          [attr.data-test]="entity.id">
+    <mat-card-header>
+        <mat-card-title>
+            {{ title }}
+        </mat-card-title>
+
+        <mat-card-subtitle>
+            {{ subtitle }}
+        </mat-card-subtitle>
+
+        <lib-state-button *ngIf="showQuickAction"
+                          [attr.data-cy]="'module.overview.grid.card.buttonQuickAction.' + entity.id"
+                          [attr.data-test]="quickAction.id"
+                          mat-card-avatar
+                          [hideLabel]="true"
+                          [action]="quickAction"
+                          [state]="quickActionState"
+                          [entity]="entity"
+                          [context]="context">
+        </lib-state-button>
+
+        <lib-menu [actions]="documentActions"
+                  [attr.data-cy]="'module.overview.grid.card.buttonDocumentActions.' + entity.id"
+                  [entity]="entity"
+                  [context]="context">
+        </lib-menu>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div class="spinner-container"
+             *ngIf="showLoading">
+            <mat-spinner></mat-spinner>
+        </div>
+
+        <img mat-card-image
+             [ngStyle]="{height: getImgHeight(), visibility: showLoading ? 'hidden' : undefined}"
+             (load)="loadingOff()"
+             [src]="getImageUrl() | safeUrl">
+    </mat-card-content>
+
+    <mat-card-footer>
+        <mat-chip-list (click)="$event.stopPropagation()">
+            <mat-chip *ngFor="let chip of chips"
+                      [selected]="chip.selected"
+                      [color]="chip.color">
+                <mat-icon class="material-icons-round">
+                    {{ chip.icon }}
+                </mat-icon>
+
+                <span>
+                    {{ chip.text }}
+                </span>
+            </mat-chip>
+        </mat-chip-list>
+    </mat-card-footer>
+</mat-card>
+
+<!-- <mat-checkbox>
+
+</mat-checkbox> -->

@@ -14,7 +14,7 @@
                 "name": "Large",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                "file": "projects/fire-ngine/src/lib/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
@@ -64,7 +64,7 @@
                 "name": "meta",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                "file": "projects/fire-ngine/src/lib/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Meta<ButtonComponent>",
@@ -104,7 +104,7 @@
                 "name": "Primary",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                "file": "projects/fire-ngine/src/lib/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
@@ -114,7 +114,7 @@
                 "name": "Secondary",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                "file": "projects/fire-ngine/src/lib/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
@@ -124,7 +124,7 @@
                 "name": "Small",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                "file": "projects/fire-ngine/src/lib/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
@@ -138,7 +138,7 @@
                 "ctype": "miscellaneous",
                 "subtype": "typealias",
                 "rawtype": "StoryObj<ButtonComponent>",
-                "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                "file": "projects/fire-ngine/src/lib/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "description": "",
@@ -169,12 +169,12 @@
         ],
         "enumerations": [],
         "groupedVariables": {
-            "projects/fire-ngine/src/stories/button.stories.ts": [
+            "projects/fire-ngine/src/lib/button.stories.ts": [
                 {
                     "name": "Large",
                     "ctype": "miscellaneous",
                     "subtype": "variable",
-                    "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                    "file": "projects/fire-ngine/src/lib/button.stories.ts",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Story",
@@ -184,7 +184,7 @@
                     "name": "meta",
                     "ctype": "miscellaneous",
                     "subtype": "variable",
-                    "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                    "file": "projects/fire-ngine/src/lib/button.stories.ts",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Meta<ButtonComponent>",
@@ -194,7 +194,7 @@
                     "name": "Primary",
                     "ctype": "miscellaneous",
                     "subtype": "variable",
-                    "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                    "file": "projects/fire-ngine/src/lib/button.stories.ts",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Story",
@@ -204,7 +204,7 @@
                     "name": "Secondary",
                     "ctype": "miscellaneous",
                     "subtype": "variable",
-                    "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                    "file": "projects/fire-ngine/src/lib/button.stories.ts",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Story",
@@ -214,7 +214,7 @@
                     "name": "Small",
                     "ctype": "miscellaneous",
                     "subtype": "variable",
-                    "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                    "file": "projects/fire-ngine/src/lib/button.stories.ts",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Story",
@@ -301,13 +301,13 @@
         "groupedFunctions": {},
         "groupedEnumerations": {},
         "groupedTypeAliases": {
-            "projects/fire-ngine/src/stories/button.stories.ts": [
+            "projects/fire-ngine/src/lib/button.stories.ts": [
                 {
                     "name": "Story",
                     "ctype": "miscellaneous",
                     "subtype": "typealias",
                     "rawtype": "StoryObj<ButtonComponent>",
-                    "file": "projects/fire-ngine/src/stories/button.stories.ts",
+                    "file": "projects/fire-ngine/src/lib/button.stories.ts",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "description": "",
@@ -358,7 +358,7 @@
                 "status": "low"
             },
             {
-                "filePath": "projects/fire-ngine/src/stories/button.stories.ts",
+                "filePath": "projects/fire-ngine/src/lib/button.stories.ts",
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
@@ -368,7 +368,7 @@
                 "status": "low"
             },
             {
-                "filePath": "projects/fire-ngine/src/stories/button.stories.ts",
+                "filePath": "projects/fire-ngine/src/lib/button.stories.ts",
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
@@ -378,7 +378,7 @@
                 "status": "low"
             },
             {
-                "filePath": "projects/fire-ngine/src/stories/button.stories.ts",
+                "filePath": "projects/fire-ngine/src/lib/button.stories.ts",
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
@@ -388,7 +388,7 @@
                 "status": "low"
             },
             {
-                "filePath": "projects/fire-ngine/src/stories/button.stories.ts",
+                "filePath": "projects/fire-ngine/src/lib/button.stories.ts",
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
@@ -398,7 +398,7 @@
                 "status": "low"
             },
             {
-                "filePath": "projects/fire-ngine/src/stories/button.stories.ts",
+                "filePath": "projects/fire-ngine/src/lib/button.stories.ts",
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",

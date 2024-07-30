@@ -1,0 +1,93 @@
+<mat-sidenav-container fullscreen>
+    <mat-sidenav>
+        <mat-nav-list *ngIf="userRoles$ | async as userRoles"
+                      (click)='closeSideNav()'>
+            <ng-container *ngFor="let link of links">
+                <a *ngIf="!link.hidden?.({roles: userRoles})"
+                   mat-list-item
+                   [attr.data-cy]="'app.main.sidenav.linkModule.' + link.targetUrl"
+                   [disabled]="link.disabled"
+                   [class]="getLinkClassAttr(link)"
+                   [routerLinkActive]="['link-active-selected']"
+                   [routerLinkActiveOptions]="{ exact: true }"
+                   [routerLink]="link.targetUrl">
+                    <mat-icon class="material-icons-round nav-icons">
+                        {{ link.icon }}
+                    </mat-icon>
+
+                    <span [ngStyle]="styles?.['navList']">
+                        {{ link.title }}
+                    </span>
+                </a>
+            </ng-container>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class='app-content'>
+        <mat-toolbar color='primary'>
+            <button mat-mini-fab
+                    data-cy="app.main.toolbar.buttonOpenNavbar"
+                    color='primary'
+                    (click)="openSideNav()">
+                <mat-icon class="material-icons-round menu-icon">
+                    menu
+                </mat-icon>
+            </button>
+
+            <span>
+                <ng-container *ngFor="let segment of headingSegments$$ | async; let isLast = last">
+                    <a mat-button
+                       class='title'
+                       [ngStyle]="styles?.['header']"
+                       [href]="segment.redirectUrl">
+                        {{ segment.displayName }}
+                    </a>
+
+                    <span *ngIf="!isLast"
+                          class="delimiter">
+                        /
+                    </span>
+                </ng-container>
+            </span>
+
+            <span class="spacer">
+            </span>
+
+            <ng-container *ngIf="$showHeaderLinks$ | async">
+                <a *ngFor="let link of links"
+                   mat-button
+                   [disabled]="link.disabled"
+                   [class]="getLinkClassAttr(link)"
+                   [routerLinkActive]="['link-active-selected']"
+                   [routerLinkActiveOptions]="{ exact: true }"
+                   [routerLink]="!link.disabled ? link.targetUrl : null">
+                    <span>
+                        {{ link.title.toUpperCase() }}
+                    </span>
+                </a>
+            </ng-container>
+
+            <button *ngIf="avatarUrl$$ | async as avatarUrl; else anonymous"
+                    mat-mini-fab
+                    [routerLink]="userLink ?? null"
+                    class="image"
+                    [style.backgroundImage]="'url(' + avatarUrl + ')'">
+            </button>
+
+            <ng-template #anonymous>
+                <a mat-mini-fab
+                   [routerLink]="userLink ?? null"
+                   color="primary">
+                    <mat-icon>
+                        smart_toy
+                    </mat-icon>
+                </a>
+            </ng-template>
+        </mat-toolbar>
+
+        <div class='outlet'>
+            <router-outlet>
+            </router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

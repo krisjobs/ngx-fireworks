@@ -1,0 +1,94 @@
+<ng-container *ngIf="currentUrl$ | async as currentUrl">
+    <ng-container *ngIf="userRoles$ | async as userRoles">
+        <ng-container *ngIf="tabs.length > 1; else noTabs">
+            <mat-tab-group *ngIf="activeTabIdx$ | async as activeTabIdx"
+                           [selectedIndex]="activeTabIdx.value"
+                           (selectedIndexChange)="onTabIndexChange($event)"
+                           mat-stretch-tabs
+                           animationDuration="0ms">
+                <mat-tab *ngFor="let tab of tabs"
+                         [disabled]="tab.tabProps?.disabled">
+                    <ng-template mat-tab-label>
+                        <mat-icon *ngIf="!tab.tabProps?.svgIcon; else svgIcon"
+                                  class='tab-icons'>
+                            {{ tab.tabProps?.icon }}
+                        </mat-icon>
+
+                        <ng-template #svgIcon>
+                            <mat-icon class='tab-icons '
+                                      [svgIcon]="tab.tabProps?.icon!">
+                            </mat-icon>
+                        </ng-template>
+
+                        <mat-label>
+                            {{ tab.tabProps?.label }}
+                        </mat-label>
+                    </ng-template>
+
+                    <ng-template matTabContent>
+                        <ng-container *ngTemplateOutlet="overview">
+                        </ng-container>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </ng-container>
+
+        <ng-template #noTabs>
+            <ng-container *ngTemplateOutlet="overview">
+            </ng-container>
+        </ng-template>
+
+        <ng-template #overview>
+            <ng-container *ngIf="viewSettings$ | async as viewSettings">
+                <lib-toolbar *ngIf="contextEntities$$ | async as contextEntities"
+                             [context]="contextEntities"
+                             [roles]="userRoles">
+                </lib-toolbar>
+
+                <mat-divider>
+                </mat-divider>
+
+                <ng-container *ngIf="queryEntities$$ | async as entities">
+                    <ng-template #paginator>
+                        <mat-paginator *ngIf="querySettings$ | async as querySettings"
+                                       [pageSizeOptions]="[5, 10, 25, 50, 100, 250]"
+                                       [pageSize]="querySettings.paginator.pageSize"
+                                       [pageIndex]="querySettings.paginator.pageIndex"
+                                       showFirstLastButtons
+                                       [length]="querySettings.paginator.querySize"
+                                       (page)="onPaginatorChange($event, entities)">
+                        </mat-paginator>
+                    </ng-template>
+
+                    <ng-container *ngIf="!!entities.length; else noResults"
+                                  [ngSwitch]="viewSettings.displayType">
+                        <ng-container *ngSwitchCase="'grid'">
+                            <lib-grid *ngIf="contextEntities$$ | async as context"
+                                      [entities]="entities"
+                                      [context]="context"
+                                      [roles]="userRoles">
+                            </lib-grid>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'table'">
+                            <lib-table *ngIf="contextEntities$$ | async as context"
+                                       [entities]="entities"
+                                       [context]="context"
+                                       [roles]="userRoles">
+                            </lib-table>
+                        </ng-container>
+
+                        <ng-container *ngTemplateOutlet="paginator">
+                        </ng-container>
+                    </ng-container>
+
+                    <ng-template #noResults>
+                        <div class="no-result">
+                            Sorry, no results found.
+                        </div>
+                    </ng-template>
+                </ng-container>
+            </ng-container>
+        </ng-template>
+    </ng-container>
+</ng-container>

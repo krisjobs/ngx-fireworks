@@ -1,0 +1,26 @@
+.grid-container {
+    margin: 20px;
+}
+
+.more-button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
+::ng-deep {
+    .mat-paginator-range-label {
+        display: none !important;
+    }
+}
+
+.tab-icons {
+    margin-left: 7px;
+    margin-right: 7px;
+    color: #5f6368;
+}
+
+.no-result {
+    margin-top: 42px;
+    margin-left: 42px;
+}

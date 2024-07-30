@@ -1,0 +1,6 @@
+<ng-container *ngFor="let box of layout.boxes">
+    <lib-box [box]="box">
+    </lib-box>
+
+    <mat-divider *ngIf="!!box.withDivider"></mat-divider>
+</ng-container>

@@ -1,0 +1,21 @@
+<h1 mat-dialog-title
+    align="center">
+    {{ title }}
+</h1>
+
+<lib-loading></lib-loading>
+
+<mat-dialog-content>
+    <lib-dropzone [multiple]="true"
+                  [filePath]="filePath"
+                  (downloadUrl)="onFileUpload($event)">
+    </lib-dropzone>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+    <button mat-raised-button
+            color="warn"
+            [mat-dialog-close]=null>
+        Close
+    </button>
+</mat-dialog-actions>

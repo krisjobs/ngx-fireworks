@@ -1,0 +1,262 @@
+<form [formGroup]="formGroup"
+      data-cy="module.form.elementEntityId"
+      [attr.data-test]="formEntity.id"
+      (keydown.enter)="saveEntity($event)"
+      (keydown.escape)="closeForm($event)">
+    <mat-stepper [linear]="false"
+                 orientation="vertical"
+                 [selectedIndex]="selectedFormIdx"
+                 #stepper>
+        <ng-container *ngFor="let step of steps">
+            <mat-step *ngIf="!step.invisible?.({entity: getFormEntity(), roles, context})"
+                      [formGroupName]="step.name"
+                      [stepControl]="formGroup.get(step.name)!"
+                      errorMessage="Missing/invalid input...">
+                <ng-template matStepLabel>
+                    <span [attr.data-cy]="'module.form.step.' +  step.name">
+                        {{ step.title }}
+                    </span>
+                </ng-template>
+
+                <ng-container *ngFor="let field of step.fields">
+                    <ng-container *ngIf="!field.hidden?.({entity: getFormEntity(), roles})"
+                                  [ngSwitch]="field.type">
+                        <ng-container *ngSwitchCase="'input'">
+                            <mat-form-field class="form-field"
+                                            appearance="outline">
+                                <mat-label>
+                                    {{ field.label }}
+                                </mat-label>
+
+                                <input matInput
+                                       [attr.data-cy]="'module.form.step.' +  step.name + '.inputField.' + field.name"
+                                       [placeholder]="field.placeholder?.({entity: getFormEntity(), context, data: contextEntities}) ?? ''"
+                                       [type]="field.subtype === 'number' ? 'number' : 'text'"
+                                       [matTooltip]="field.tooltip?.({entity: getFormEntity(), context, data: contextEntities}) ?? ''"
+                                       [formControlName]="field.name"
+                                       autocomplete="new-password"
+                                       #input>
+
+                                <mat-hint *ngIf="!!field.hint">
+                                    {{ getHint(field) }}
+                                </mat-hint>
+
+                                <button [class.invisible]="!(input.value && !field.disabled?.({entity: getFormEntity(), roles}))"
+                                        matSuffix
+                                        mat-icon-button
+                                        (click)="clearValue(step.name, field.name)">
+                                    <mat-icon class='material-icons-round'>
+                                        close
+                                    </mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'select'">
+                            <mat-form-field class="form-field"
+                                            appearance="outline">
+                                <mat-label>
+                                    {{ field.label }}
+                                </mat-label>
+
+                                <mat-hint *ngIf="!!field.hint">
+                                    {{ getHint(field) }}
+                                </mat-hint>
+
+                                <mat-select [attr.data-cy]="'module.form.step.' +  step.name + '.selectField.' + field.name"
+                                            [matTooltip]="field.tooltip?.({entity: getFormEntity(), context, data: contextEntities}) ?? ''"
+                                            [formControlName]="field.name">
+                                    <mat-option [value]="null">
+                                        <span data-test="null">
+                                            -None-
+                                        </span>
+                                    </mat-option>
+
+                                    <mat-option *ngFor="let option of field.options?.({entity: getFormEntity(), context}); trackBy:trackByOptions"
+                                                [value]="option.value">
+                                        <span [attr.data-test]="option.value">
+                                            {{ option.name }}
+                                        </span>
+                                    </mat-option>
+
+                                    <mat-optgroup *ngFor="let group of field.optionGroups?.({entity: getFormEntity(), context}); trackBy:trackByOptionGroup"
+                                                  [label]="group.label">
+                                        <mat-option *ngFor="let option of group.options; trackBy:trackByOptions"
+                                                    [value]="option.value">
+                                            <span [attr.data-test]="option.value">
+                                                {{ option.name }}
+                                            </span>
+                                        </mat-option>
+                                    </mat-optgroup>
+                                </mat-select>
+                            </mat-form-field>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'textarea'">
+                            <mat-form-field class="text-area"
+                                            appearance="outline">
+                                <mat-label>
+                                    {{ field.label }}
+                                </mat-label>
+
+                                <textarea matInput
+                                          [matTooltip]="field.tooltip?.({entity: getFormEntity(), context, data: contextEntities}) ?? ''"
+                                          [attr.data-cy]="'module.form.step.' +  step.name + '.textField.' + field.name"
+                                          [formControlName]="field.name">
+                                </textarea>
+
+                                <mat-hint *ngIf="!!field.hint">
+                                    {{ getHint(field) }}
+                                </mat-hint>
+                            </mat-form-field>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'date'">
+                            <mat-form-field appearance="outline">
+                                <mat-label>
+                                    {{ field.label }}
+                                </mat-label>
+
+                                <input #input
+                                       [matTooltip]="field.tooltip?.({entity: getFormEntity(), context, data: contextEntities}) ?? ''"
+                                       [attr.data-cy]="'module.form.step.' +  step.name + '.dateField.' + field.name"
+                                       autocomplete="new-password"
+                                       matInput
+                                       [matDatepicker]="datePicker"
+                                       [formControlName]="field.name">
+
+                                <mat-hint *ngIf="!!field.hint">
+                                    {{ getHint(field) }}
+                                </mat-hint>
+
+                                <button *ngIf="input.value && !field.disabled?.({entity: getFormEntity(), roles})"
+                                        matSuffix
+                                        mat-icon-button
+                                        (click)="clearValue(step.name, field.name)">
+                                    <mat-icon class='material-icons-round'>
+                                        close
+                                    </mat-icon>
+                                </button>
+
+                                <mat-datepicker-toggle matSuffix
+                                                       [for]="datePicker">
+                                </mat-datepicker-toggle>
+
+                                <mat-datepicker #datePicker>
+                                </mat-datepicker>
+                            </mat-form-field>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'daterange'">
+                            <mat-form-field appearance="outline"
+                                            class="daterange-field">
+                                <mat-label>
+                                    {{ field.label }}
+                                </mat-label>
+
+                                <mat-date-range-input [formGroupName]="field.name"
+                                                      [matTooltip]="field.tooltip?.({entity: getFormEntity(), context, data: contextEntities}) ?? ''"
+                                                      [rangePicker]="rangePicker">
+                                    <input matStartDate
+                                           formControlName="from">
+                                    <input matEndDate
+                                           formControlName="to">
+                                </mat-date-range-input>
+
+                                <mat-hint *ngIf="!!field.hint">
+                                    {{ getHint(field) }}
+                                </mat-hint>
+
+                                <mat-datepicker-toggle matSuffix
+                                                       [for]="rangePicker">
+                                </mat-datepicker-toggle>
+
+                                <mat-date-range-picker #rangePicker>
+                                </mat-date-range-picker>
+                            </mat-form-field>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'switch'">
+                            <mat-slide-toggle color="primary"
+                                              [matTooltip]="field.tooltip?.({entity: getFormEntity(), context, data: contextEntities}) ?? ''"
+                                              [attr.data-cy]="'module.form.step.' +  step.name + '.switchField.' + field.name"
+                                              [formControlName]="field.name">
+                                <span>
+                                    {{ field.label }}
+                                </span>
+                            </mat-slide-toggle>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'dropzone'">
+                            <mat-expansion-panel [expanded]="field.expanded">
+                                <mat-expansion-panel-header collapsedHeight="100px"
+                                                            [attr.data-cy]="'module.form.step.' +  step.name + '.fileField.' + field.name + '.expand'">
+                                    <mat-form-field (click)="onExpansionClick($event)">
+                                        <mat-label>
+                                            {{ field.label }}
+                                        </mat-label>
+
+                                        <input matInput
+                                               [attr.data-cy]="'module.form.step.' +  step.name + '.inputField.' + field.name"
+                                               autocomplete="new-password"
+                                               #dropzoneInput
+                                               type="text"
+                                               [formControlName]="field.name">
+
+                                        <button *ngIf="dropzoneInput.value"
+                                                matSuffix
+                                                mat-icon-button
+                                                (click)="clearValue(step.name, field.name)">
+                                            <mat-icon>
+                                                close
+                                            </mat-icon>
+                                        </button>
+                                    </mat-form-field>
+                                </mat-expansion-panel-header>
+
+                                <ng-template matExpansionPanelContent>
+                                    <lib-dropzone [attr.data-cy]="'module.form.step.' +  step.name + '.fileField.' + field.name"
+                                                  [filePath]="getFilePath(field)"
+                                                  [fileName]="field.uploadName?.(formEntity)"
+                                                  (downloadUrl)="onImageUpload(step.name, field.name, $event)">
+                                    </lib-dropzone>
+                                </ng-template>
+                            </mat-expansion-panel>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'chips'">
+                            <mat-form-field class="example-chip-list"
+                                            appearance="fill">
+                                <mat-label>
+                                    {{ field.label }}
+                                </mat-label>
+
+                                <mat-chip-list #chipList
+                                               aria-label="Video keywords"
+                                               multiple
+                                               [formControlName]="field.name">
+                                    <mat-chip *ngFor="let keyword of getOptions(field.name); trackBy:trackByOptions"
+                                              [selected]="keyword"
+                                              [value]="keyword"
+                                              (removed)="removeKeyword(keyword, field.name, $event)">
+                                        {{ keyword }}
+
+                                        <button matChipRemove>
+                                            <mat-icon>cancel</mat-icon>
+                                        </button>
+                                    </mat-chip>
+
+                                    <input (keydown.enter)="$event.stopPropagation()"
+                                           placeholder="New keyword..."
+                                           autocomplete="off"
+                                           [matChipInputFor]="chipList"
+                                           (matChipInputTokenEnd)="addKeywordFromInput($event, field.name)">
+                                </mat-chip-list>
+                            </mat-form-field>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </mat-step>
+        </ng-container>
+    </mat-stepper>
+</form>

@@ -1,0 +1,72 @@
+[mat-menu-item] {
+    width: 250px;
+}
+
+.offset-icon {
+    position: relative;
+    left: 7px;
+}
+
+.offset-switch {
+    position: relative;
+    margin-right: 4px;
+    right: 4px;
+    top: 3px;
+}
+
+.offset-switch-standalone {
+    position: relative;
+    // top: 5px;
+    left: 5px;
+}
+
+.offset-radio {
+    margin-right: 3px;
+    padding-left: 9px;
+}
+
+.offset-radio-standalone {
+    position: relative;
+    top: 5px;
+    left: 5px;
+}
+
+.offset-checkbox {
+    position: relative;
+    left: 10px;
+    bottom: 1px;
+    margin-right: 23px;
+}
+
+.offset-checkbox-standalone {
+    position: relative;
+    // top: 8px;
+    left: 8px;
+}
+
+mat-icon {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.red-icon {
+    mat-icon {
+        color: rgba(255, 0, 0, 0.75);
+    }
+}
+
+.purple-icon {
+    mat-icon {
+        color: #4527a0bf !important;
+    }
+}
+
+.pinned-action {
+    [mat-stroked-button] {
+        float: right;
+        margin-right: 15px;
+    }
+}
+
+.configuration-sum {
+    margin-left: 4px;
+}

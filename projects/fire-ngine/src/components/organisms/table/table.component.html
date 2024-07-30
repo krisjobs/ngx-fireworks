@@ -1,0 +1,182 @@
+<table mat-table
+       *ngIf="asyncData$ | async as asyncData"
+       multiTemplateDataRows
+       [dataSource]="entities"
+       [class.for-templates]="forTemplates"
+       matSort
+       [matSortActive]="asyncData.viewSettings.sort.tableSortProperty || ''"
+       [matSortDirection]="asyncData.viewSettings.sort.tableSortDirection"
+       (matSortChange)="onSortChange($event)">
+
+    <!-- ===================== Main table ===================== -->
+
+    <!-- ===================== Toolbar Header ===================== -->
+
+    <ng-container *ngIf="!!forTemplates">
+        <tr mat-header-row
+            *matHeaderRowDef="['toolbar']; sticky: true">
+        </tr>
+
+        <ng-container matColumnDef="toolbar">
+            <th mat-header-cell
+                [attr.colspan]="asyncData.displayColumns.length"
+                *matHeaderCellDef>
+                <lib-toolbar *ngIf="forTemplates"
+                             [forTemplates]="forTemplates">
+                    <mat-paginator *ngIf="templateSettings$ | async as querySettings"
+                                   [pageSizeOptions]="[5, 10, 25, 50, 100, 250]"
+                                   [pageSize]="querySettings.paginator.pageSize"
+                                   [pageIndex]="querySettings.paginator.pageIndex"
+                                   showFirstLastButtons
+                                   [length]="querySettings.paginator.querySize"
+                                   (page)="onPaginatorChange($event, entities)">
+                    </mat-paginator>
+                </lib-toolbar>
+            </th>
+        </ng-container>
+    </ng-container>
+
+    <!-- header row -->
+    <tr mat-header-row
+        *matHeaderRowDef="asyncData.displayColumns; sticky: true">
+    </tr>
+
+    <!-- table rows -->
+    <tr mat-row
+        data-cy="module.overview.table.row"
+        [attr.data-test]="entity.id"
+        *matRowDef="let entity; columns: asyncData.displayColumns;"
+        class="lib-table-row"
+        [class.highlighted]="asyncData.viewSettings.selectedTemplateId === entity.id"
+        [class.example-expanded-row]="expandedEntity === entity"
+        (click)="onRowClick(entity)"
+        (dblclick)="onRowDblClick({entity})">
+    </tr>
+
+    <!-- quick action -->
+    <ng-container *ngIf="showQuickAction">
+        <ng-container matColumnDef="quick">
+            <th mat-header-cell
+                *matHeaderCellDef>
+                <mat-icon matTooltip="Quick action"
+                          class='material-icons-round'>
+                    stars
+                </mat-icon>
+            </th>
+
+            <td mat-cell
+                [class.checkbox-column]="asyncData.quickAction.type === 'checkbox'"
+                *matCellDef="let entity">
+                <lib-state-button mat-card-avatar
+                                  [hideLabel]="true"
+                                  [action]="asyncData.quickAction"
+                                  [state]="asyncData.quickActionState({entity, context})"
+                                  [entity]="entity"
+                                  [context]="context">
+                </lib-state-button>
+            </td>
+        </ng-container>
+    </ng-container>
+
+    <!-- table columns -->
+    <ng-container *ngFor="let column of columns"
+                  [matColumnDef]="column.columnDef">
+        <th mat-header-cell
+            [mat-sort-header]="column.sortProperty"
+            *matHeaderCellDef>
+            <ng-container *ngIf="!!column.header; else headerIcon">
+                {{ column.header }}
+            </ng-container>
+
+            <ng-template #headerIcon>
+                <mat-icon class='material-icons-round'>
+                    {{ column.headerIcon }}
+                </mat-icon>
+            </ng-template>
+        </th>
+
+        <td mat-cell
+            *matCellDef="let row"
+            [ngSwitch]="column.type">
+            <ng-container *ngSwitchCase="'icon'">
+                <!-- <lib-state-button [action]="column.action!(row)">
+                </lib-state-button> -->
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'text'">
+                <span [attr.data-cy]="'module.overview.table.' + column.columnDef + '.' + row.id">
+                    {{ column.cell!({entity: row, context}) }}
+                </span>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'number'">
+                <lib-state-button *ngIf="!!column.decrementAction && !column.invisible?.({entity: row, context})"
+                                  [attr.data-cy]="'module.overview.table.' + column.columnDef + '.' + row.id + '.buttonDecrementAction'"
+                                  mat-card-avatar
+                                  [hideLabel]="true"
+                                  [action]="getDecrementAction(column)"
+                                  [state]="asyncData.actionStates[getDecrementAction(column).id]({entity: row, context})"
+                                  [entity]="row"
+                                  [context]="context">
+                </lib-state-button>
+
+                <span>
+                    {{ column.cell!({entity: row, context}) }}
+                </span>
+
+                <lib-state-button *ngIf="!!column.incrementAction && !column.invisible?.({entity: row, context})"
+                                  [attr.data-cy]="'module.overview.table.' + column.columnDef + '.' + row.id + '.buttonIncrementAction'"
+                                  mat-card-avatar
+                                  [hideLabel]="true"
+                                  [action]="getIncrementAction(column)"
+                                  [state]="asyncData.actionStates[getIncrementAction(column).id]({entity: row, context})"
+                                  [entity]="row"
+                                  [context]="context">
+                </lib-state-button>
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <!-- menu column -->
+    <ng-container *ngIf="showMenuColumn">
+        <ng-container matColumnDef="menu"
+                      stickyEnd>
+            <th mat-header-cell
+                class="menu-column"
+                *matHeaderCellDef>
+                <mat-icon matTooltip="Menu"
+                          class='material-icons-round'>
+                    flash_on
+                </mat-icon>
+            </th>
+
+            <td mat-cell
+                class="menu-column"
+                *matCellDef="let entity">
+                <lib-menu [actions]="getDocumentActions(entity)"
+                          [attr.data-cy]="'module.overview.table.buttonDocumentActions.' + entity.id"
+                          [entity]="entity"
+                          [context]="context">
+                </lib-menu>
+            </td>
+        </ng-container>
+    </ng-container>
+
+    <!-- ===================== Expanded Content ===================== -->
+    <tr mat-row
+        *matRowDef="let row; columns: ['expandedDetail']"
+        class="lib-table-detail-row">
+    </tr>
+
+    <ng-container matColumnDef="expandedDetail">
+        <td mat-cell
+            *matCellDef="let entity"
+            [attr.colspan]="asyncData.displayColumns.length">
+            <!-- <div class="lib-table-detail"
+                 [@detailExpand]="entity == expandedEntity ? 'expanded' : 'collapsed'">
+                <lib-expanded [entity]="entity">
+                </lib-expanded>
+            </div> -->
+        </td>
+    </ng-container>
+</table>

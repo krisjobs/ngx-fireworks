@@ -1,0 +1,96 @@
+<mat-list>
+    <form [formGroup]="formGroup"
+          (keydown.enter)="$event.preventDefault()">
+        <ng-container *ngFor="let group of listItems">
+            <ng-container *ngFor="let listItem of group">
+                <mat-list-item *ngIf="!listItem.hidden?.(entity, demoMode) && !listItem.inactive?.(entity)">
+                    <ng-container>
+                        <span *ngIf="!listItem.labelBold; else boldLabel">
+                            {{ listItem.label(entity) }}
+                        </span>
+
+                        <ng-template #boldLabel>
+                            <b>
+                                {{ listItem.label(entity) }}
+                            </b>
+                        </ng-template>
+                    </ng-container>
+
+                    <span class="spacer"></span>
+
+                    <ng-container [ngSwitch]="listItem.contentType">
+                        <ng-container *ngSwitchCase="'text'">
+                            <span [ngStyle]="listItem.contentStyle?.(entity)">
+                                <span *ngIf="!listItem.contentBold; else boldContent">
+                                    {{ listItem.content(entity) }}
+                                </span>
+
+                                <ng-template #boldContent>
+                                    <b>
+                                        {{ listItem.content(entity) }}
+                                    </b>
+                                </ng-template>
+                            </span>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'switch'">
+                            <span>
+                                {{ listItem.contentPrefix?.(entity) }}
+                            </span>
+
+                            <mat-slide-toggle [formControlName]="listItem.contentName!"
+                                              color="primary">
+                            </mat-slide-toggle>
+
+                            <span>
+                                {{ listItem.contentSuffix?.(entity) }}
+                            </span>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'input'">
+                            <span>
+                                {{ listItem.contentPrefix?.(entity) }}
+                            </span>
+
+                            <mat-form-field floatLabel="never"
+                                            class="input-form-field">
+                                <input matInput
+                                       [type]="!!listItem.contentNumeric ? 'number' : 'text'"
+                                       [placeholder]="listItem.contentPlaceholder!"
+                                       [formControlName]="listItem.contentName!"
+                                       autocomplete="new-password"
+                                       #input>
+
+                                <button *ngIf="input.value"
+                                        matSuffix
+                                        mat-icon-button
+                                        (click)="clearValue(listItem.contentName!)">
+                                    <mat-icon>
+                                        close
+                                    </mat-icon>
+                                </button>
+                            </mat-form-field>
+
+                            <span>
+                                {{ listItem.contentSuffix?.(entity) }}
+                            </span>
+                        </ng-container>
+                    </ng-container>
+                </mat-list-item>
+            </ng-container>
+
+            <mat-divider>
+            </mat-divider>
+        </ng-container>
+
+        <mat-list-item *ngIf="withButton">
+            <button mat-raised-button
+                    [disabled]="!formGroup.valid || buttonDisabled || !hasChange()"
+                    class="save-button"
+                    (click)="saveEntity()"
+                    color="warn">
+                {{ buttonText }}
+            </button>
+        </mat-list-item>
+    </form>
+</mat-list>

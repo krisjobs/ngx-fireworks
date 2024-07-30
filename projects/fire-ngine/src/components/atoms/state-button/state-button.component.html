@@ -1,0 +1,151 @@
+<span *ngIf="context$ | async as settings"
+      [ngSwitch]="action.type({viewSettings: settings.viewSettings})"
+      [class]="actionClassAttr">
+    <ng-template #standalone>
+        <ng-container *ngSwitchCase="'icon'">
+            <button *ngIf="!getActionLabel(settings.currentUrl) || forMenu || hideLabel; else textButton"
+                    mat-icon-button
+                    (click)="onActionButtonClick($event, settings.currentUrl)"
+                    [disabled]="action.disabled?.({entity, context})">
+                <mat-icon [class]='getIconClass()'
+                          [color]="getColor(action, settings.currentUrl)"
+                          [ngStyle]="getStyle('icon')"
+                          [class.offset-icon]="forMenu">
+                    {{ actionValue }}
+                </mat-icon>
+            </button>
+
+            <ng-template #textButton>
+                <button mat-stroked-button
+                        class="configuration-sum-button context-menu-button"
+                        [disabled]="action.disabled?.({entity, context})"
+                        (click)="onActionButtonClick($event, settings.currentUrl)">
+                    <mat-icon [color]="getColor(action, settings.currentUrl)"
+                              [ngStyle]="getStyle('icon')">
+                        {{ actionValue }}
+                    </mat-icon>
+
+                    <span class="configuration-sum">
+                        {{ getActionLabel(settings.currentUrl) }}
+                    </span>
+                </button>
+            </ng-template>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'switch'">
+            <mat-slide-toggle [class.offset-switch]="forMenu"
+                              [class.offset-switch-standalone]="!forMenu"
+                              (click)="onActionButtonClick($event, settings.currentUrl)"
+                              [color]="getColor(action, settings.currentUrl)"
+                              [disabled]="action.disabled?.({entity, context})"
+                              [matTooltip]="action.disabledHint?.({entity, context})!"
+                              [matTooltipDisabled]="!action.disabled?.({entity, context})"
+                              [checked]="!!actionValue">
+            </mat-slide-toggle>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'chip'">
+            <mat-chip-list>
+                <mat-chip [selected]="!!getColor(action, settings.currentUrl)"
+                          [color]="getColor(action, settings.currentUrl)">
+                    <span>
+                        {{ getActionLabel(settings.currentUrl) }}
+                    </span>
+
+                    <!-- <mat-icon>
+                        cancel
+                    </mat-icon> -->
+                </mat-chip>
+            </mat-chip-list>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'radio'">
+            <mat-radio-group [class.offset-radio]="forMenu"
+                             [class.offset-radio-standalone]="!forMenu"
+                             [value]="!!actionValue">
+                <mat-radio-button [color]="getColor(action, settings.currentUrl)"
+                                  [disabled]="action.disabled?.({entity, context})"
+                                  [matTooltip]="action.disabledHint?.({entity, context})!"
+                                  [matTooltipDisabled]="!action.disabled?.({entity, context})"
+                                  [value]="true"
+                                  (click)="onActionButtonClick($event, settings.currentUrl)">
+                </mat-radio-button>
+            </mat-radio-group>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'checkbox'">
+            <mat-checkbox [class.offset-checkbox]="forMenu"
+                          [class.offset-checkbox-standalone]="!forMenu"
+                          [checked]="!!actionValue"
+                          [color]="getColor(action, settings.currentUrl)"
+                          [disabled]="action.disabled?.({entity, context})"
+                          [matTooltip]="action.disabledHint?.({entity, context})!"
+                          [matTooltipDisabled]="!action.disabled?.({entity, context})"
+                          [indeterminate]="actionValue === null"
+                          (click)="onActionButtonClick($event, settings.currentUrl)">
+            </mat-checkbox>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'menu'">
+            <button mat-icon-button
+                    [disabled]="action.disabled?.({entity, context})">
+                <mat-icon [class]='getIconClass()'
+                          [color]="getColor(action, settings.currentUrl)"
+                          [ngStyle]="getStyle('icon')"
+                          [class.offset-icon]="forMenu">
+                    {{ actionValue }}
+                </mat-icon>
+            </button>
+        </ng-container>
+    </ng-template>
+
+    <ng-container *ngIf="action.type({viewSettings: settings.viewSettings}) !== 'menu'; else submenuButton">
+        <button mat-menu-item
+                *ngIf="forMenu; else standalone"
+                [disabled]="action.disabled?.({entity, context})"
+                (click)="onMenuButtonClick($event, settings.currentUrl)">
+            <ng-container *ngIf="!action.trailingIcon"
+                          [ngTemplateOutlet]="standalone">
+            </ng-container>
+
+            <span>
+                {{ getActionLabel(settings.currentUrl) }}
+            </span>
+
+            <ng-container *ngIf="!!action.trailingIcon"
+                          [ngTemplateOutlet]="standalone">
+            </ng-container>
+        </button>
+    </ng-container>
+
+    <ng-template #submenuButton>
+        <button mat-menu-item
+                [matMenuTriggerFor]="action.type({viewSettings: settings.viewSettings}) === 'menu' ? submenu : null"
+                *ngIf="forMenu; else standalone"
+                [disabled]="action.disabled?.({entity, context})">
+            <ng-container [ngTemplateOutlet]="standalone">
+            </ng-container>
+
+            <span>
+                {{ getActionLabel(settings.currentUrl) }}
+            </span>
+        </button>
+    </ng-template>
+
+    <mat-menu #submenu="matMenu">
+        <button mat-menu-item
+                *ngFor="let item of action.submenu?.({entity, context})"
+                (click)="onMenuButtonClick($event, settings.currentUrl, item)">
+            <mat-icon [color]="getColor(action, settings.currentUrl)"
+                      [ngStyle]="getStyle('icon')">
+                {{ action.submenuChoice?.({entity, context, data: item}) ? 
+                'radio_button_checked' :
+                'radio_button_unchecked' }}
+            </mat-icon>
+
+            <span>
+                {{ item }}
+            </span>
+        </button>
+    </mat-menu>
+</span>

@@ -1,0 +1,46 @@
+<ng-container [ngSwitch]="mode">
+    <ng-container *ngSwitchCase="'icon'">
+        <button mat-icon-button
+                (click)="$event.stopPropagation()"
+                class="menu-button"
+                [matMenuTriggerFor]="menu">
+            <mat-icon class='material-icons-round'>
+                {{ icon }}
+            </mat-icon>
+        </button>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'button'">
+        <button mat-raised-button
+                (click)="$event.stopPropagation()"
+                class="menu-button"
+                [matMenuTriggerFor]="menu">
+            <span>
+                {{ label }}
+            </span>
+
+            <mat-icon class='material-icons-round'>
+                {{ icon }}
+            </mat-icon>
+        </button>
+    </ng-container>
+</ng-container>
+
+<mat-menu #menu
+          xPosition="before">
+    <ng-template matMenuContent>
+        <ng-container *ngFor="let action of actions; let idx = index">
+            <div class="menu-item">
+                <lib-state-button [action]="action"
+                                  [state]="actionStates[action.id]({entity, context})"
+                                  [attr.data-cy]="'app.lib.menu.buttonAction.' + action.id"
+                                  [attr.data-test]="actionStates[action.id]({entity, context})"
+                                  [entity]="entity"
+                                  [context]="context"
+                                  [forTemplates]="forTemplates"
+                                  [forMenu]="true">
+                </lib-state-button>
+            </div>
+        </ng-container>
+    </ng-template>
+</mat-menu>

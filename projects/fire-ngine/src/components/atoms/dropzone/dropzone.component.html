@@ -1,0 +1,27 @@
+<input type="file"
+       #dropzoneInput
+       [id]="inputId"
+       [multiple]="multiple"
+       (change)="onFilesSelect($event)">
+
+<label [for]="inputId">
+    <div class="dropzone">
+        <ng-container *ngIf="!base64Image; else image">
+            <mat-icon class="material-icons-round dropzone-icon">
+                cloud_upload
+            </mat-icon>
+            <h2>Drag and drop file here</h2>
+            <h3>Or click to <b>browse</b></h3>
+        </ng-container>
+
+        <ng-template #image>
+            <img class='thumbnail'
+                 [src]="base64Image">
+        </ng-template>
+    </div>
+
+    <mat-progress-bar *ngIf="this.percentageChanges$ | async as percentage"
+                      mode="determinate"
+                      [value]="percentage">
+    </mat-progress-bar>
+</label>

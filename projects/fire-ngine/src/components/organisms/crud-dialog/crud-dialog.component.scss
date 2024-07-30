@@ -1,0 +1,38 @@
+:host {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+.confirm-toggle {
+    margin-top: 21px;
+    margin-bottom: 21px;
+}
+
+.confirm-group {
+    display: none;
+}
+
+::ng-deep mat-step-header {
+    width: 50% !important;
+    margin: 20px auto;
+}
+
+mat-dialog-actions {
+    button {
+        margin-right: 20px;
+    }
+}
+
+::ng-deep .mat-step-optional {
+    display: none;
+}
+
+lib-form {
+    position: relative;
+    top: -42px;
+}

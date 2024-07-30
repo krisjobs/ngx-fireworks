@@ -105,6 +105,7 @@
               }
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/azure-blue.css",
               "projects/fire-books/src/styles.scss"
             ],
             "scripts": []
@@ -164,6 +165,7 @@
               }
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/azure-blue.css",
               "projects/fire-books/src/styles.scss"
             ],
             "scripts": []

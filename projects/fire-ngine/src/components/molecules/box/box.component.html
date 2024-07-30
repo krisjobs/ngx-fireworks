@@ -1,0 +1,202 @@
+<div *ngIf="currentUrl$ | async as currentUrl"
+     [ngSwitch]="box.type"
+     class="box-container"
+     [ngStyle]="boxWidth$ | async">
+    <ng-container *ngSwitchCase="'header'">
+        <div class="highlight-header">
+            <header>
+                <h1 *ngIf="!!box.segments[0]?.title"
+                    [ngStyle]="box.segments[0].styles?.['h1']">
+                    {{ box.segments[0].title }}
+                </h1>
+
+                <h2 *ngIf="!!box.segments[1]?.title"
+                    [ngStyle]="box.segments[1].styles?.['h2']">
+                    <span>
+                        {{ box.segments[1].title }}
+                    </span>
+                </h2>
+
+                <a *ngIf="!!box.segments[2]"
+                   mat-raised-button
+                   color="primary"
+                   [routerLink]="box.segments[2].link"
+                   [ngStyle]="box.segments[2].styles['a']">
+                    {{ box.segments[2].title }}
+                </a>
+
+                <div *ngIf="!!box.segments[3]">
+                    <a *ngFor="let altLink of box.segments[3].altLinks; let idx = index"
+                       #supportButton
+                       class='support-button'
+                       mat-raised-button
+                       target="_blank"
+                       [href]="altLink"
+                       [ngStyle]="box.segments[3].styles?.['a']">
+                        {{ box.segments[3].altLabels?.[idx] }}
+                    </a>
+                </div>
+            </header>
+        </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'media'">
+        <div class="media-container">
+            <img *ngIf="!!mainSegment.defaultUrl; else youtube"
+                 class="media-img"
+                 [ngStyle]="mainSegment.styles?.['img']"
+                 [src]="mainSegment.defaultUrl">
+
+            <ng-template #youtube>
+                <div class="youtube-player">
+                    <youtube-player [videoId]="mainSegment.link"
+                                    [width]="width$ | async">
+                    </youtube-player>
+                </div>
+            </ng-template>
+        </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'feature'">
+        <h5 *ngIf="!!box.title"
+            class="features-title"
+            [ngStyle]="box.styles?.['h5']">
+            {{ box.title }}
+        </h5>
+
+        <div class="feature-cards"
+             *ngIf="breakpointValue$ | async as numCols">
+            <ng-container *ngIf="numCols === 1 || box.segments.length === 1; else multiCol">
+                <ng-container *ngFor="let segment of box.segments; let idx = index">
+                    <div class="text-card">
+                        <h2 [ngStyle]="segment.styles?.['h2']">
+                            {{ segment.title }}
+                        </h2>
+
+                        <div class="feature-media">
+                            <img [src]="segment.defaultUrl">
+                        </div>
+
+                        <div class="paragraph-list">
+                            <p *ngFor="let paragraph of segment.paragraphs; let pidx = index"
+                               [ngStyle]="mainSegment.styles?.['p'+pidx]">
+                                <span *ngIf="!isListItem(paragraph); else listItem"
+                                      [ngStyle]="segment.styles?.['p'+pidx]"
+                                      [innerHTML]="customizeText(paragraph)">
+                                </span>
+
+                                <ng-template #listItem>
+                                    <li>
+                                        <span [ngStyle]="segment.styles?.['p'+idx]"
+                                              [innerHTML]="customizeText(paragraph, true)">
+                                        </span>
+                                    </li>
+                                </ng-template>
+                            </p>
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+
+            <ng-template #multiCol>
+                <mat-grid-list class="feature-list"
+                               [cols]="numCols"
+                               [rowHeight]="altBreakpointValue$ | async">
+                    <ng-container *ngFor="let segment of box.segments; let idx = index; let isEven = even">
+                        <mat-grid-tile class="feature-media"
+                                       *ngIf="!isEven">
+                            <img [src]="segment.defaultUrl">
+                        </mat-grid-tile>
+
+                        <mat-grid-tile class="feature-card">
+                            <div>
+                                <h2 [ngStyle]="segment.styles?.['h2']">
+                                    {{ segment.title }}
+                                </h2>
+
+                                <mat-list>
+                                    <mat-list-item *ngFor="let paragraph of segment.paragraphs; let pidx = index">
+                                        <span *ngIf="!isListItem(paragraph); else listItem"
+                                              [ngStyle]="segment.styles?.['p'+pidx]"
+                                              [innerHTML]="customizeText(paragraph)">
+                                        </span>
+
+                                        <ng-template #listItem>
+                                            <li>
+                                                <span [ngStyle]="segment.styles?.['p'+idx]"
+                                                      [innerHTML]="customizeText(paragraph, true)">
+                                                </span>
+                                            </li>
+                                        </ng-template>
+                                    </mat-list-item>
+                                </mat-list>
+                            </div>
+                        </mat-grid-tile>
+
+                        <mat-grid-tile class="feature-media"
+                                       *ngIf="!!isEven">
+                            <img [src]="segment.defaultUrl">
+                        </mat-grid-tile>
+                    </ng-container>
+                </mat-grid-list>
+            </ng-template>
+        </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'social'">
+        <h5 class="social-title"
+            [ngStyle]="box.styles?.['h5']">
+            Join us!
+        </h5>
+
+        <div class="social-ribbon">
+            <img *ngFor="let segment of box.segments; let idx=index"
+                 [src]="segment.defaultUrl"
+                 [class.disabled]="!!segment.disabled"
+                 (click)="openSocial(segment.link)">
+        </div>
+    </ng-container>
+
+    <!-- text-cards -->
+    <ng-container *ngSwitchDefault>
+        <ng-container *ngIf="breakpointValue$ | async as numCols">
+            <ng-container *ngIf="numCols === 1 || box.segments.length === 1; else multiCol">
+                <ng-container *ngFor="let segment of box.segments; let idx = index">
+                    <mat-card class="text-card">
+                        <h2 [ngStyle]="segment.styles?.['h2']">
+                            {{ segment.title }}
+                        </h2>
+
+                        <p *ngFor="let paragraph of segment.paragraphs; let pidx = index"
+                           [ngStyle]="mainSegment.styles?.['p'+pidx]"
+                           [innerHTML]="customizeText(paragraph)">
+                        </p>
+                    </mat-card>
+                </ng-container>
+            </ng-container>
+
+            <ng-template #multiCol>
+                <mat-grid-list class="text-cards"
+                               [cols]="breakpointValue$ | async"
+                               [rowHeight]="altBreakpointValue$ | async">
+                    <mat-grid-tile *ngFor="let segment of box.segments; let idx = index">
+                        <mat-card class="text-card">
+                            <mat-card-content>
+                                <h2 [ngStyle]="segment.styles?.['h2']">
+                                    {{ segment.title }}
+                                </h2>
+
+                                <mat-list>
+                                    <mat-list-item *ngFor="let paragraph of segment.paragraphs">
+                                        <span [innerHTML]="customizeText(paragraph)">
+                                        </span>
+                                    </mat-list-item>
+                                </mat-list>
+                            </mat-card-content>
+                        </mat-card>
+                    </mat-grid-tile>
+                </mat-grid-list>
+            </ng-template>
+        </ng-container>
+    </ng-container>
+</div>

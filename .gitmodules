@@ -1,0 +1,4 @@
+[submodule "lib-common"]
+path = common
+url = git@krisjobs.bitbucket.org:goblinware/lib-common.git
+branch = main

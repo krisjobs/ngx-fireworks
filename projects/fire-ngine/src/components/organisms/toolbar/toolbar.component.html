@@ -1,0 +1,131 @@
+<ng-container *ngIf="currentUrl$ | async as url">
+    <mat-toolbar *ngIf="viewSettings$ | async as viewSettings"
+                 [class.white-background]="forTemplates">
+        <button mat-icon-button
+                class="context-menu-button toggle-sidenav-button"
+                (click)="hideSidenav()">
+            <mat-icon class="material-icons-rounds">
+                {{ (hideSidenav$ | async) ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right' }}
+            </mat-icon>
+        </button>
+
+        <button mat-icon-button
+                *ngIf="isDefaultQuery$ | async"
+                data-cy="module.home.toolbar.buttonClearFilters"
+                class="context-menu-button"
+                (click)="clearFilters()">
+            <mat-icon class="material-icons-round clear-filters-button">
+                filter_list_off
+            </mat-icon>
+        </button>
+
+        <lib-menu [actions]="getViewActions(viewSettings, url)"
+                  [context]="context"
+                  data-cy="module.home.toolbar.buttonViewMenu"
+                  mode="button"
+                  icon="tune"
+                  [forTemplates]="forTemplates"
+                  label="View">
+        </lib-menu>
+
+        <lib-menu [actions]="getSortActions(viewSettings, url)"
+                  [context]="context"
+                  data-cy="module.home.toolbar.buttonSortMenu"
+                  mode="button"
+                  icon="sort"
+                  [forTemplates]="forTemplates"
+                  label="Sort">
+        </lib-menu>
+
+        <lib-filters [fields]="getFilterFields()"
+                     [filters]="(querySettings$ | async)?.filters!"
+                     [context]="context"
+                     data-cy="module.home.toolbar.buttonFiltersMenu"
+                     [forTemplates]="forTemplates"
+                     [roles]="roles"
+                     (onChange)="applyFilters($event)">
+        </lib-filters>
+
+        <mat-chip-list *ngIf="showChips">
+            <mat-chip *ngFor="let chip of chips"
+                      [selected]="chip.selected"
+                      [color]="chip.color">
+                <mat-icon *ngIf="!!chip.icon"
+                          class="material-icons-round">
+                    {{ chip.icon }}
+                </mat-icon>
+
+                <span>
+                    {{ chip.text }}
+                </span>
+            </mat-chip>
+        </mat-chip-list>
+
+        <span class="spacer">
+        </span>
+
+        <ng-container *ngIf="!forTemplates; else templates">
+            <ng-container *ngIf="showPinnedAction(url)">
+                <lib-state-button *ngIf="pinnedActionSettings$ | async as pinnedActionSettings"
+                                  data-cy="module.home.toolbar.buttonPinnedAction"
+                                  [attr.data-test]="pinnedActionSettings[0].id"
+                                  [action]="pinnedActionSettings[0]"
+                                  [state]="pinnedActionSettings[1][pinnedActionSettings[0].id]({entity: undefined, context})"
+                                  [entity]="context.query!"
+                                  [context]="context">
+                </lib-state-button>
+            </ng-container>
+
+            <lib-menu [actions]="getCollectionActions(url)"
+                      data-cy="module.home.toolbar.buttonCollectionActions"
+                      [entity]="context.query!"
+                      [context]="context">
+            </lib-menu>
+
+            <mat-button-toggle-group #view="matButtonToggleGroup"
+                                     [value]="viewSettings.displayType"
+                                     (change)="onSelectView($event)">
+                <mat-button-toggle *ngIf="overviewTypes.includes('table')"
+                                   value="table"
+                                   data-cy="module.home.toolbar.buttonTableView"
+                                   matTooltip="Table">
+                    <mat-icon class="material-icons-round">
+                        table_rows
+                    </mat-icon>
+                </mat-button-toggle>
+
+                <mat-button-toggle *ngIf="overviewTypes.includes('grid')"
+                                   value="grid"
+                                   data-cy="module.home.toolbar.buttonGridView"
+                                   matTooltip="Grid">
+                    <mat-icon class="material-icons-round">
+                        grid_view
+                    </mat-icon>
+                </mat-button-toggle>
+
+                <mat-button-toggle *ngIf="overviewTypes.includes('dashboard')"
+                                   value="dashboard"
+                                   data-cy="module.home.toolbar.buttonDashboardView"
+                                   matTooltip="Dashboard">
+                    <mat-icon class="material-icons-round">
+                        dashboard
+                    </mat-icon>
+                </mat-button-toggle>
+
+                <mat-button-toggle *ngIf="overviewTypes.includes('freeform')"
+                                   value="freeform"
+                                   data-cy="module.home.toolbar.buttonFreeformView"
+                                   matTooltip="Freeform">
+                    <mat-icon class="material-icons-round">
+                        donut_small
+                    </mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </ng-container>
+
+        <ng-template #templates>
+            <ng-content>
+            </ng-content>
+        </ng-template>
+    </mat-toolbar>
+</ng-container>

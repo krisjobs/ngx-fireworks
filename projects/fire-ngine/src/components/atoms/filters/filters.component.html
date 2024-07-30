@@ -1,0 +1,79 @@
+<button mat-raised-button
+        class="menu-button"
+        [matMenuTriggerFor]="filters">
+    <span>
+        Filters
+    </span>
+
+    <mat-icon class='material-icons-round'>
+        filter_list
+    </mat-icon>
+</button>
+
+<mat-menu #filters="matMenu"
+          xPosition="after">
+    <form [formGroup]="formGroup"
+          (click)="preventDefault($event)">
+        <ng-container *ngFor="let field of fields">
+            <ng-container *ngIf="!field.hidden?.({data: !!context?.query, roles, flag: forTemplates})">
+                <ng-container *ngIf="field.type === 'input';else select">
+                    <mat-form-field class="form-field">
+                        <mat-label>
+                            {{ field.label }}
+                        </mat-label>
+
+                        <input matInput
+                               type="text"
+                               [attr.data-cy]="'module.home.toolbar.filters.inputField.' + field.name"
+                               [formControlName]="field.name"
+                               #input>
+
+                        <button *ngIf="input.value"
+                                matSuffix
+                                mat-icon-button
+                                (click)="clearValue(field.name)">
+                            <mat-icon class='material-icons-round'>
+                                close
+                            </mat-icon>
+                        </button>
+                    </mat-form-field>
+                </ng-container>
+
+                <ng-template #select>
+                    <mat-form-field class="form-field">
+                        <mat-label>
+                            {{ field.label }}
+                        </mat-label>
+
+                        <mat-select [formControlName]="field.name"
+                                    [attr.data-cy]="'module.home.toolbar.filters.selectField.' + field.name">
+                            <mat-option [value]="null">
+
+                                <span data-test="null">
+                                    -None-
+                                </span>
+                            </mat-option>
+
+                            <mat-option *ngFor="let option of field.options?.({context}); trackBy:trackByOptions"
+                                        [value]="option.value">
+                                <span [attr.data-test]="option.value">
+                                    {{ option.name }}
+                                </span>
+                            </mat-option>
+
+                            <mat-optgroup *ngFor="let group of field.optionGroups?.({context}); trackBy:trackByOptionGroup"
+                                          [label]="group.label">
+                                <mat-option *ngFor="let option of group.options; trackBy:trackByOptions"
+                                            [value]="option.value">
+                                    <span [attr.data-test]="option.value">
+                                        {{ option.name }}
+                                    </span>
+                                </mat-option>
+                            </mat-optgroup>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-template>
+            </ng-container>
+        </ng-container>
+    </form>
+</mat-menu>

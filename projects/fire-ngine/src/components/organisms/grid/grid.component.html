@@ -1,0 +1,16 @@
+<div class="grid-container">
+    <mat-grid-list [cols]="numCols$ | async"
+                   rowHeight="350px">
+        <ng-container *ngIf="cardSettings$ | async as cardSettings">
+            <mat-grid-tile *ngFor="let entity of entities">
+                <lib-card [entity]="entity"
+                          [context]="context"
+                          [roles]="roles"
+                          [showQuickAction]="showQuickAction"
+                          [quickAction]="cardSettings[0]"
+                          [quickActionState]="cardSettings[1][cardSettings[0].id]({entity, context})">
+                </lib-card>
+            </mat-grid-tile>
+        </ng-container>
+    </mat-grid-list>
+</div>

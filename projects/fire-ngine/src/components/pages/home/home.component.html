@@ -1,0 +1,67 @@
+<ng-container *ngIf="userRoles$ | async as userRoles">
+    <mat-sidenav-container autosize>
+        <mat-sidenav mode="side"
+                     *ngIf="!!navLinks.length && showNavLinks"
+                     opened>
+            <ng-container *ngIf="hideSidenav$ | async as hideSidenav">
+                <mat-nav-list *ngIf="currentUrl$ | async as currentUrl">
+                    <ng-container *ngFor="let linkGroups of navLinks">
+                        <ng-container *ngFor="let link of linkGroups">
+                            <a *ngIf="!link.hidden?.(userRoles)"
+                               [disabled]="link.disabled"
+                               mat-list-item
+                               [attr.data-cy]="'module.home.sidenav.linkSection.' + link.targetUrl"
+                               routerLinkActive="active-link"
+                               [queryParamsHandling]="link.mergeQueryParams"
+                               (click)="reloadPage(link.targetUrl, currentUrl)"
+                               [routerLink]="link.targetUrl">
+                                <mat-icon *ngIf="!link.svgIcon; else svgIcon"
+                                          class='nav-icons '
+                                          [class.material-icons-outlined]="link.outlined">
+                                    {{ link.icon }}
+                                </mat-icon>
+
+                                <ng-template #svgIcon>
+                                    <mat-icon class='nav-icons '
+                                              [svgIcon]="link.icon!"
+                                              [class.material-icons-outlined]="link.outlined">
+                                    </mat-icon>
+                                </ng-template>
+
+                                <span>
+                                    {{ link.title }}
+                                </span>
+                            </a>
+                        </ng-container>
+
+                        <mat-divider></mat-divider>
+                    </ng-container>
+                </mat-nav-list>
+            </ng-container>
+        </mat-sidenav>
+
+        <mat-sidenav-content>
+            <ng-container *ngIf="showLanding$ | async; else outlet">
+                <!-- maybe this is only good for header toolbars -->
+                <div class="spacer">
+                    <lib-dashboard [layout]="layout!">
+                    </lib-dashboard>
+                </div>
+
+                <footer>
+                    <mat-toolbar color='primary'>
+                        <h1 [ngStyle]="styles?.['footer']">
+                            {{ footing$ | async }}
+                        </h1>
+                    </mat-toolbar>
+                </footer>
+            </ng-container>
+
+            <ng-template #outlet>
+                <lib-loading></lib-loading>
+
+                <router-outlet></router-outlet>
+            </ng-template>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</ng-container>

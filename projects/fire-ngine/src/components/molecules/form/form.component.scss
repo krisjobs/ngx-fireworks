@@ -1,0 +1,29 @@
+mat-form-field {
+    margin-right: 120px;
+    margin-bottom: 15px !important;
+}
+
+mat-slide-toggle {
+    margin-right: 30px;
+}
+
+mat-expansion-panel {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+mat-expansion-panel-header {
+    padding-top: 10px;
+}
+
+.text-area {
+    width: 80%;
+
+    textarea {
+        min-height: 150px;
+    }
+}
+
+.invisible {
+    visibility: hidden;
+}
