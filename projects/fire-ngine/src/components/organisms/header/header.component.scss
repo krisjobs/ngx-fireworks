@@ -1,0 +1,48 @@
+header {
+  /* Semi-transparent black background */
+  background: linear-gradient(
+    to bottom,
+    rgba(151, 151, 151),
+    rgba(151, 151, 151, 0.5)
+  );
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  // offset-x | offset-y | blur-radius (how thick) | spread-radius (how long) | color
+  box-shadow: 0 10px 100px 10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px); /* Blur effect for content behind the header */
+
+  @media (max-width: 768px) {
+    padding: 15px 10px;
+
+    #center {
+      display: none;
+    }
+  }
+
+  .header-box {
+    display: flex;
+    align-items: center;
+
+    .nav-button {
+      margin: 0 10px;
+    }
+
+    .router-link-active {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .avatar {
+    margin-left: 12px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+  }
+}

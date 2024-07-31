@@ -1,0 +1,115 @@
+<header>
+  <div class="header-box"
+       id="left">
+    <button mat-icon-button
+            (click)="toggleSidenav()">
+      <mat-icon>
+        menu
+      </mat-icon>
+    </button>
+
+    <a mat-button
+       [routerLink]="['/']"
+       color="primary">
+      H2Oasis
+    </a>
+  </div>
+
+  <div class="header-box"
+       id="center">
+
+    @for (module of $modules(); track module.displayName ) {
+    @if (!module.hiddenFromHeader) {
+    <a mat-button
+       class="nav-button"
+       color="primary"
+       [routerLink]="module.routerLink"
+       [routerLinkActive]="['router-link-active']"
+       [routerLinkActiveOptions]="{ exact: false }">
+      {{ module.displayName }}
+    </a>
+    }}
+  </div>
+
+  <div class="header-box"
+       id="right">
+    <button mat-button
+            color="primary"
+            (click)="changeLanguage()">
+      <!-- {{ currentLocale }} -->
+        EN
+    </button>
+
+    <button mat-icon-button
+            [matMenuTriggerFor]="settings">
+      <mat-icon>
+        settings
+      </mat-icon>
+    </button>
+
+    <mat-menu #settings="matMenu">
+      <button mat-menu-item
+              (click)="test()">
+        Test
+      </button>
+
+      <button mat-menu-item
+              (click)="testFunction()">
+        Test Function
+      </button>
+
+      <button mat-menu-item
+              (click)="testQuery()">
+        Test Query
+      </button>
+    </mat-menu>
+
+    <button mat-icon-button
+            class="avatar"
+            [matMenuTriggerFor]="user"
+            [style.backgroundImage]="$avatarBackground()">
+      @if(!$authUser()) {
+      <mat-icon>
+        account_circle
+      </mat-icon>
+      }
+    </button>
+
+    <mat-menu #user="matMenu">
+      @if(!$authUser()) {
+      <button mat-menu-item
+              (click)='googleLogIn()'>
+        <mat-icon class='material-icons-round nav-icons'>
+          login
+        </mat-icon>
+
+        <span>
+          Google Login
+        </span>
+      </button>
+
+      <button mat-menu-item
+              (click)='logIn()'>
+        <mat-icon class='material-icons-round nav-icons'>
+          alternate_email
+        </mat-icon>
+
+        <span>
+          Email Login
+        </span>
+      </button>
+      } @else {
+      <button mat-menu-item
+              (click)='logOut()'>
+        <mat-icon class='material-icons-round nav-icons'>
+          logout
+        </mat-icon>
+
+        <span>
+          Logout
+        </span>
+      </button>
+      }
+    </mat-menu>
+  </div>
+</header>

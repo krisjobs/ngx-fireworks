@@ -7,7 +7,7 @@
       "projectType": "library",
       "root": "projects/fire-ngine",
       "sourceRoot": "projects/fire-ngine/src",
-      "prefix": "lib",
+      "prefix": "fng",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",

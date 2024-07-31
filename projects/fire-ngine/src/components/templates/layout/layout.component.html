@@ -1,0 +1,36 @@
+<mat-sidenav-container fullscreen>
+  <mat-sidenav [autoFocus]="false">
+    <mat-nav-list (click)="closeSideNav()">
+      <a mat-list-item
+         [routerLink]="['/']"
+         [routerLinkActive]="['router-link-active']"
+         [routerLinkActiveOptions]="{ exact: true }">
+        Home
+      </a>
+
+      @for (module of $modules(); track module.displayName ) {
+      @if (!module.hiddenFromSidenav) {
+      <a mat-list-item
+         [routerLink]="module.routerLink"
+         [routerLinkActive]="['router-link-active']"
+         [routerLinkActiveOptions]="{ exact: false }">
+        {{ module.displayName }}
+      </a>
+      }}
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <fng-header (onToggleSidenav)="openSideNav()">
+
+    </fng-header>
+
+    <fng-main>
+
+    </fng-main>
+
+    <fng-footer>
+
+    </fng-footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

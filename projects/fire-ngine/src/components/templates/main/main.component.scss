@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+main {
+  overflow-y: auto; /* Adds scroll to main content if it overflows */
+
+  @media (max-width: 768px) {
+  }
+}
