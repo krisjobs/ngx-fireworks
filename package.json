@@ -11,8 +11,9 @@
     "build": "ng build",
     "build:lib": "ng build fire-ngine",
     "build:storybook": "ng run fire-ngine:build-storybook",
-    "version:patch": "cd projects/fire-ngine && npm version patch",
+    "version:lib": "cd projects/fire-ngine && npm version patch",
     "publish:lib": "cd dist/fire-ngine && npm publish",
+    "lib": "npm run version:lib && npm run build:lib && npm run publish:lib",
     "storybook": "ng run fire-ngine:storybook"
   },
   "private": true,

@@ -13,13 +13,13 @@ import { connectFunctionsEmulator, getFunctions, provideFunctions } from '@angul
 // import { getAnalytics, provideAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
 // import { getRemoteConfig, provideRemoteConfig } from '@angular/fire/remote-config';
 
+import { LIB_CONFIG, ENV_CONFIG } from '../models';
 
 import { AuthService } from '../services/firebase/auth.service';
 import { FirestoreService } from '../services/firebase/firestore.service';
 import { FunctionsService } from '../services/firebase/functions.service';
 import { StorageService } from '../services/firebase/storage.service';
-import { ENV_CONFIG } from '../models/app/env.models';
-import { LIB_CONFIG } from '../models';
+import { FirebaseService } from '../services/firebase/firebase.service';
 
 
 @NgModule({
@@ -106,10 +106,11 @@ import { LIB_CONFIG } from '../models';
     //   return initializeAppCheck(undefined, { provider, isTokenAutoRefreshEnabled: true });
     // })),
 
+    FirebaseService,
     AuthService,
     FirestoreService,
-    FunctionsService,
     StorageService,
+    FunctionsService,
   ]
 })
 export class FirebaseModule {

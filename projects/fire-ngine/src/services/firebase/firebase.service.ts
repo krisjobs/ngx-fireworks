@@ -4,6 +4,8 @@ import { Injectable } from '@angular/core';
 export class FirebaseService {
 
   constructor(
-  ) { }
+  ) {
+    console.log('FirebaseService');
+  }
 
 }

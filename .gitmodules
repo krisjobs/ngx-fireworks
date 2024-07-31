@@ -1,4 +1,4 @@
 [submodule "lib-common"]
-path = common
+path = projects/fire-ngine/src/common
 url = git@krisjobs.bitbucket.org:goblinware/lib-common.git
 branch = main

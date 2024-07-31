@@ -22,7 +22,7 @@ import {
 import { Router } from '@angular/router';
 
 import { Observable, fromEventPattern, map, from, switchMap, tap, of } from 'rxjs';
-import { UserCustomClaims, UserProfileUpdate,  } from '../../../../../common/models';
+import { UserCustomClaims, UserProfileUpdate } from '../../common/models';
 
 // ===================== MODELS =====================
 

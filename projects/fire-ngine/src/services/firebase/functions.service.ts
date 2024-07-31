@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Functions, httpsCallable, HttpsCallableResult } from "@angular/fire/functions";
 import { from, map } from "rxjs";
-import { InvokeFunctionParams } from "../../../../../common/models";
+import { InvokeFunctionParams } from "../../common/models";
 
 @Injectable()
 export class FunctionsService {
