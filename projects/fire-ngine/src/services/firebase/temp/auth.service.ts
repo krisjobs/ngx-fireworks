@@ -15,23 +15,27 @@ import {
   signInWithPopup,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  sendSignInLinkToEmail,
+  ActionCodeSettings,
   isSignInWithEmailLink,
   signInWithEmailLink,
   sendPasswordResetEmail,
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-
 import { Observable, fromEventPattern, map, from, switchMap, tap, of } from 'rxjs';
-import { UserCustomClaims, UserProfileUpdate,  } from '../../../../../common/models';
 
 // ===================== MODELS =====================
 
+import { UserRoles, UserProfileUpdate } from 'functions/src/styleguide/models';
 
 // ===================== UTILITY =====================
 
+import { environment } from 'src/environments/environment';
 
 // ===================== SERVICES =====================
 
+import { ErrorService } from 'src/app/styleguide/services/error.service';
+import { NotificationService } from 'src/app/styleguide/services/notification.service';
 
 // ===================== DEFINITIONS =====================
 
@@ -44,27 +48,26 @@ export class AuthService {
   }
 
   public get loggedUser(): User {
-    if (!this.currentUser) {
-      throw new Error('User is not logged');
-    }
+    const user = this.errorService.throwErrorIfNotExist('User is not logged', this.currentUser);
 
-    return this.currentUser;
+    return user;
   }
 
-  private idToken$$ = fromEventPattern(
+  public idToken$$ = fromEventPattern(
     observer => this.auth.onIdTokenChanged(observer)
   ).pipe(
-    switchMap((user) => {
-      const currentUser = user as User | null;
-      return currentUser ? currentUser.getIdTokenResult() : of(null);
-    }),
+    switchMap((user) => (user as User).getIdToken()),
   );
 
-  public userRoles$$ = this.idToken$$.pipe(
-    map(token => {
-      const customClaims = token?.claims as unknown as UserCustomClaims | null;
-      return customClaims ? customClaims.roles : null;
-    }),
+  public idTokenResult$$ = fromEventPattern(
+    observer => this.auth.onIdTokenChanged(observer)
+  ).pipe(
+    map(user => (user as User | null)),
+    switchMap((user) => user ? user.getIdTokenResult() : of(null)),
+  );
+
+  public userRoles$$: Observable<UserRoles> = this.idTokenResult$$.pipe(
+    map(token => token?.claims as any || { admin: false })
   )
 
   public currentUser$$: Observable<User | null> = fromEventPattern(
@@ -74,7 +77,7 @@ export class AuthService {
       const currentUser = user as User | null;
 
       if (currentUser) {
-        // const uid = currentUser.uid;
+        const uid = currentUser.uid;
         // ...
       } else {
         // User is signed out
@@ -87,7 +90,9 @@ export class AuthService {
 
   constructor(
     private auth: Auth,
+    private notificationService: NotificationService,
     private router: Router,
+    private errorService: ErrorService,
   ) { }
 
   public signOut(): void {
@@ -95,13 +100,13 @@ export class AuthService {
       .pipe()
       .subscribe({
         complete: () => {
-          console.warn('User logged out.');
-          // this.router.navigateByUrl('/user');
+          this.notificationService.message('User logged out.');
+          this.router.navigateByUrl('/user');
         },
         error: (error: Error) => {
           console.error(error.message);
 
-          console.error(`Could not sign out.`);
+          this.notificationService.error(`Could not sign out.`);
         }
       });
   }
@@ -122,14 +127,14 @@ export class AuthService {
       )
       .subscribe({
         next: (user) => {
-          console.warn(`Hello, ${user.displayName || 'welcome back'}!`);
+          this.notificationService.message(`Hello, ${user.displayName || 'welcome back'}!`);
 
           this.router.navigateByUrl('/');
         },
         error: (error: Error) => {
           console.error(error.message);
 
-          console.error(`Could not sign in.`);
+          this.notificationService.error(`Could not sign in.`);
         }
       });
   }
@@ -142,7 +147,7 @@ export class AuthService {
       )
       .subscribe({
         next: (user) => {
-          console.warn(`Welcome!`, user);
+          this.notificationService.message(`Welcome!`);
         },
         complete: () => {
           this.router.navigate(['/']);
@@ -150,7 +155,7 @@ export class AuthService {
         error: (error: Error) => {
           console.error(error.message);
 
-          console.error(`Could not sign up.`);
+          this.notificationService.error(`Could not sign up.`);
         }
       });
   }
@@ -164,7 +169,7 @@ export class AuthService {
           // The signed-in user info.
           const user = userCredential.user;
 
-          console.warn(`Hello, ${user.displayName || 'welcome back'}!`);
+          this.notificationService.message(`Hello, ${user.displayName || 'welcome back'}!`);
         },
         complete: () => {
           this.router.navigateByUrl('/');
@@ -175,7 +180,7 @@ export class AuthService {
           const email = error.customData.email;
           console.error(error.message, [errorCode, email]);
 
-          console.error(`Could not sign in with Google.`);
+          this.notificationService.error(`Could not sign in with Google.`);
         }
       });
   }
@@ -184,11 +189,11 @@ export class AuthService {
     from(sendEmailVerification(user))
       .subscribe({
         complete: () => {
-          console.warn(`Verification email sent.`);
+          this.notificationService.message(`Verification email sent.`);
         },
         error: (error: Error) => {
           console.error(error.message);
-          console.error(`Could not send email verification.`);
+          this.notificationService.error(`Could not send email verification.`);
         }
       });
   }
@@ -197,11 +202,11 @@ export class AuthService {
     from(sendPasswordResetEmail(this.auth, email))
       .subscribe({
         complete: () => {
-          console.warn(`Password reset email sent.`);
+          this.notificationService.message(`Password reset email sent.`);
         },
         error: (error: Error) => {
           console.error(error.message);
-          console.error(`Could not send password reset email.`);
+          this.notificationService.error(`Could not send password reset email.`);
         }
       });
   }
@@ -210,52 +215,52 @@ export class AuthService {
   //   from(signInAnonymously(this.auth))
   //     .subscribe({
   //       complete: () => {
-  //         console.warn(`Logged in as anonymous.`);
+  //         this.notificationService.message(`Logged in as anonymous.`);
   //       },
   //       error: (error: Error) => {
   //         console.error(error.message);
 
-  //         console.error(`Could not login as anonymous.`);
+  //         this.notificationService.error(`Could not login as anonymous.`);
   //       }
   //     });
   // }
 
-  // public sendSignInLinkToEmail(email: string) {
-  //   const settings: ActionCodeSettings = {
-  //     // URL you want to redirect back to. The domain (www.example.com) for this
-  //     // URL must be in the authorized domains list in the Firebase Console.
-  //     url: `${environment.user.emailSignIn}`,
-  //     // This must be true.
-  //     handleCodeInApp: true,
+  public sendSignInLinkToEmail(email: string) {
+    const settings: ActionCodeSettings = {
+      // URL you want to redirect back to. The domain (www.example.com) for this
+      // URL must be in the authorized domains list in the Firebase Console.
+      url: `${environment.user.emailSignIn}`,
+      // This must be true.
+      handleCodeInApp: true,
 
-  //     // iOS: {
-  //     //   bundleId: 'com.example.ios'
-  //     // },
-  //     // android: {
-  //     //   packageName: 'com.example.android',
-  //     //   installApp: true,
-  //     //   minimumVersion: '12'
-  //     // },
-  //     // dynamicLinkDomain: 'example.page.link'
-  //   };
+      // iOS: {
+      //   bundleId: 'com.example.ios'
+      // },
+      // android: {
+      //   packageName: 'com.example.android',
+      //   installApp: true,
+      //   minimumVersion: '12'
+      // },
+      // dynamicLinkDomain: 'example.page.link'
+    };
 
-  //   from(sendSignInLinkToEmail(this.auth, email, settings))
-  //     .subscribe({
-  //       complete: () => {
-  //         // The link was successfully sent. Inform the user.
-  //         console.warn(`Login link email sent.`);
+    from(sendSignInLinkToEmail(this.auth, email, settings))
+      .subscribe({
+        complete: () => {
+          // The link was successfully sent. Inform the user.
+          this.notificationService.message(`Login link email sent.`);
 
-  //         // Save the email locally so you don't need to ask the user for it again
-  //         // if they open the link on the same device.
-  //         window.localStorage.setItem('user.auth.email', email);
-  //       },
-  //       error: (error: Error) => {
-  //         console.error(error.message, [email, settings]);
+          // Save the email locally so you don't need to ask the user for it again
+          // if they open the link on the same device.
+          window.localStorage.setItem('user.auth.email', email);
+        },
+        error: (error: Error) => {
+          console.error(error.message, [email, settings]);
 
-  //         console.error(`Could not send login email link.`);
-  //       }
-  //     });
-  // }
+          this.notificationService.error(`Could not send login email link.`);
+        }
+      });
+  }
 
   public isSignInWithEmailLink(link: string) {
     return isSignInWithEmailLink(this.auth, link);
@@ -268,7 +273,7 @@ export class AuthService {
           // "link" | "reauthenticate" | "signIn"
           console.warn('WOW', userCredential.operationType);
 
-          console.warn(`Hello, ${userCredential.user.displayName || 'welcome back'}!`);
+          this.notificationService.message(`Hello, ${userCredential.user.displayName || 'welcome back'}!`);
         },
         complete: () => {
           this.router.navigate(['/']);
@@ -278,7 +283,7 @@ export class AuthService {
         },
         error: (error: Error) => {
           console.error(error.message, [email, link]);
-          console.error(`Could not send sign in with email link.`);
+          this.notificationService.error(`Could not send sign in with email link.`);
         }
       });
   }
@@ -298,11 +303,11 @@ export class AuthService {
         complete: () => {
           window.location.reload();
 
-          console.warn(`Updated user profile.`);
+          this.notificationService.message(`Updated user profile.`);
         },
         error: (error: Error) => {
           console.error(error.message, [update.displayName, update.photoURL]);
-          console.error(`Could not update user profile.`);
+          this.notificationService.error(`Could not update user profile.`);
         }
       });
   }
@@ -321,11 +326,11 @@ export class AuthService {
         complete: () => {
           // window.location.reload();
 
-          console.warn(`Updated user email.`);
+          this.notificationService.message(`Updated user email.`);
         },
         error: (error: Error) => {
           console.error(error.message, [newEmail]);
-          console.error(`Could not update user email.`);
+          this.notificationService.error(`Could not update user email.`);
         }
       });
   }
@@ -339,7 +344,7 @@ export class AuthService {
     }
 
     // Prompt the user to re-provide their sign-in credentials
-    const credential = EmailAuthProvider.credential(
+    var credential = EmailAuthProvider.credential(
       this.auth.currentUser.email!,
       oldPassword
     );
@@ -351,11 +356,11 @@ export class AuthService {
       .subscribe({
         complete: () => {
 
-          console.warn(`Updated user password.`);
+          this.notificationService.message(`Updated user password.`);
         },
         error: (error: Error) => {
           console.error(error.message);
-          console.error(`Could not update password.`);
+          this.notificationService.error(`Could not update password.`);
         }
       });
   }

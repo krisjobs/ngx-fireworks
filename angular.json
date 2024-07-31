@@ -124,7 +124,13 @@
                   "maximumError": "4kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "projects/fire-books/src/environments/environment.ts",
+                  "with": "projects/fire-books/src/environments/environment.prod.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,

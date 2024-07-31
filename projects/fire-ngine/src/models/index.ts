@@ -5,4 +5,4 @@ export {
 export {
   LibConfig,
   LIB_CONFIG,
-} from './fire-ngine.models';
+} from './app/lib.models';

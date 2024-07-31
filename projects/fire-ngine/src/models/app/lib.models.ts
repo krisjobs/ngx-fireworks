@@ -1,9 +1,8 @@
 import { InjectionToken } from '@angular/core';
+import { EmulatorPorts } from '../firebase/firebase.models';
 
 export interface LibConfig {
-  apiUrl: string;
-  featureFlag: boolean;
-  // Add other configuration properties as needed
+  ports: EmulatorPorts;
 }
 
 export const LIB_CONFIG = new InjectionToken<LibConfig>('LibConfig');

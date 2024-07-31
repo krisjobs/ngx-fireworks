@@ -1,16 +1,20 @@
 import { Injectable } from "@angular/core";
-import { Functions, httpsCallable } from "@angular/fire/functions";
-import { InvokeFunctionParams } from "functions/src/styleguide/models";
-import { BehaviorSubject, from, map, Observable, switchMap } from "rxjs";
-import { firestoreCollections } from "src/app/shared/utility/firestore-collections";
+import { Functions, httpsCallable, HttpsCallableResult } from "@angular/fire/functions";
+import { from, map } from "rxjs";
+import { InvokeFunctionParams } from "../../../../../common/models";
+
 @Injectable()
 export class FunctionsService {
-	private collectionIdsSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
-	constructor(private functions: Functions) {}
+  constructor(
+    private functions: Functions
+  ) { }
 
-	// TODO transfer http to app calls
-	public callFunction$(functionId: string, data: Partial<InvokeFunctionParams> = {}) {
-		return from(httpsCallable(this.functions, functionId).call(undefined, data));
-	}
+  // TODO transfer http to app calls
+  public callFunction$<T = unknown>(functionId: string, data: InvokeFunctionParams = {}) {
+    const firebaseFunction = httpsCallable(this.functions, functionId);
+    return from(firebaseFunction(data)).pipe(
+      map((result: HttpsCallableResult) => result.data as T)
+    );
+  }
 }

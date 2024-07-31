@@ -10,10 +10,10 @@ import {
 } from "@angular/fire/firestore";
 import { from, fromEventPattern, Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { BatchWriteData } from '../../models';
 
 // ===================== MODELS =====================
 
+import { BatchWriteData } from 'functions/src/styleguide/models';
 
 // ===================== DEFINITIONS =====================
 
@@ -61,7 +61,7 @@ export class FirestoreService {
       ...rawData
     } = data;
 
-    return from(addDoc(colRef, {
+    return from(addDoc<DocumentData>(colRef, {
       ...rawData
     })).pipe(
       map(
@@ -82,7 +82,7 @@ export class FirestoreService {
       ...rawData
     } = data;
 
-    return from(setDoc(docRef, {
+    return from(setDoc<DocumentData>(docRef, {
       ...rawData
     })).pipe(
       map(
@@ -113,7 +113,7 @@ export class FirestoreService {
         (docSnap: DocumentSnapshot) => {
           const data = docSnap.data();
 
-          if (data) {
+          if (!!data) {
             const doc = {
               id: docSnap.id,
               path: this.path2ancestor(docSnap.ref.path),
@@ -253,7 +253,7 @@ export class FirestoreService {
     // console.warn(data)
     const batch = writeBatch(this.firestore);
 
-    if (data.set) {
+    if (!!data.set) {
       data.set.forEach(
         ([
           {
@@ -270,7 +270,7 @@ export class FirestoreService {
       );
     }
 
-    if (data.update) {
+    if (!!data.update) {
       data.update.forEach(
         ([
           {
@@ -286,7 +286,7 @@ export class FirestoreService {
       );
     }
 
-    if (data.delete) {
+    if (!!data.delete) {
       data.delete.forEach(
         ([
           {

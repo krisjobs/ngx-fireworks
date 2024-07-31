@@ -5,6 +5,9 @@ import {
 } from '@angular/fire/storage';
 import { uploadBytesResumable, UploadTaskSnapshot } from 'firebase/storage';
 import { from, fromEventPattern, map, NEVER, Observable, switchMap } from 'rxjs';
+import { AppService } from 'src/app/styleguide/services/app.service';
+
+import { NotificationService } from 'src/app/styleguide/services/notification.service';
 
 
 @Injectable()
@@ -12,17 +15,19 @@ export class StorageService {
 
   constructor(
     private storage: Storage,
+    private notificationService: NotificationService,
+    private appService: AppService
   ) { }
 
   public getBase64Url(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
+      var reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
         resolve(reader.result as string);
       };
       reader.onerror = (error) => {
-        console.error('Error during base64 conversion.');
+        this.notificationService.error('Error during base64 conversion.');
         reject(error)
       };
     });
@@ -60,7 +65,7 @@ export class StorageService {
         uploadBytes(fileRef, file, metadata)
           .then(
             (uploadResult) => {
-              console.warn(`Uploaded ${uploadResult.ref.name}.`);
+              this.notificationService.message(`Uploaded ${uploadResult.ref.name}.`);
             }
           )
       ).pipe(
@@ -73,7 +78,7 @@ export class StorageService {
           'state_changed',
           observer,
           error => {
-            console.error(error.message);
+            this.notificationService.error(error.message);
           },
           () => {
             // Handle successful uploads on complete

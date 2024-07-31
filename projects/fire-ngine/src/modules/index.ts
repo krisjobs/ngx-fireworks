@@ -1,1 +1,1 @@
-export {}
+export { FirebaseModule } from './firebase.module';
