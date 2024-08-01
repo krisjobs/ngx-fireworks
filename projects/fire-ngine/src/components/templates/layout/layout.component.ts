@@ -5,7 +5,6 @@ import { MatSidenav, MatSidenavContent, MatSidenavContainer } from '@angular/mat
 import { MatListItem, MatNavList } from '@angular/material/list'
 import { toSignal } from '@angular/core/rxjs-interop';
 
-
 import { MainComponent } from '../main/main.component';
 import { HeaderComponent } from '../../organisms/header/header.component';
 import { FooterComponent } from '../../organisms/footer/footer.component';

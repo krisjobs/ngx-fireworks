@@ -5,24 +5,20 @@ export const version = '0.0.1';
 
 export const modules: ModuleConfig[] = [
   {
-    routerLink: ['services'],
-    displayName: 'Services'
+    routerLink: ['books'],
+    displayName: 'Books'
   },
   {
-    routerLink: ['news'],
-    displayName: 'News'
+    routerLink: ['lunch'],
+    displayName: 'Lunch'
   },
   {
-    routerLink: ['articles'],
-    displayName: 'Articles'
+    routerLink: ['chess'],
+    displayName: 'Chess'
   },
   {
-    routerLink: ['database'],
-    displayName: 'Database'
-  },
-  {
-    routerLink: ['calculator'],
-    displayName: 'Calculator'
+    routerLink: ['fitness'],
+    displayName: 'Fitness'
   },
   {
     routerLink: ['admin'],
