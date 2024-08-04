@@ -1,0 +1,84 @@
+<mat-sidenav-container>
+    <mat-sidenav mode="side"
+                 opened>
+        <mat-nav-list>
+            <ng-container *ngIf="signedIn$$ | async; else signedOut">
+                <a mat-list-item
+                   routerLink="account">
+                    <mat-icon class='material-icons-round nav-icons'>
+                        manage_accounts
+                    </mat-icon>
+
+                    <span>
+                        User account
+                    </span>
+                </a>
+
+                <a mat-list-item
+                   routerLink="settings">
+                    <mat-icon class='material-icons-round nav-icons'>
+                        webhook
+                    </mat-icon>
+
+                    <span>
+                        User settings
+                    </span>
+                </a>
+
+                <mat-divider></mat-divider>
+
+                <a mat-list-item
+                   (click)='logOut()'>
+                    <mat-icon class='material-icons-round nav-icons'>
+                        logout
+                    </mat-icon>
+
+                    <span>
+                        Logout
+                    </span>
+                </a>
+            </ng-container>
+
+            <ng-template #signedOut>
+                <a mat-list-item
+                   routerLink="login">
+                    <mat-icon class='material-icons-round nav-icons'>
+                        login
+                    </mat-icon>
+
+                    <span>
+                        Login
+                    </span>
+                </a>
+
+                <a mat-list-item
+                   (click)='googleLogIn()'>
+                    <mat-icon svgIcon="google"
+                              class='material-icons-round nav-icons'>
+                    </mat-icon>
+
+                    <span>
+                        Google auth
+                    </span>
+                </a>
+
+                <mat-divider></mat-divider>
+
+                <a mat-list-item
+                   routerLink="registration">
+                    <mat-icon class='material-icons-round nav-icons'>
+                        how_to_reg
+                    </mat-icon>
+
+                    <span>
+                        Registration
+                    </span>
+                </a>
+            </ng-template>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>

@@ -9,4 +9,4 @@ export {
   getDefaultEntitySettings,
   getDefaultQuerySettings,
   getDefaultViewSettings,
-} from './ui.configs';
+} from './entity/default.config';

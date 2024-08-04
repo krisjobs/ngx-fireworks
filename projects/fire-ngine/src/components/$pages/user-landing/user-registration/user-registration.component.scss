@@ -1,0 +1,40 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 42px;
+}
+
+mat-card-content {
+  mat-form-field {
+    width: 100%;
+  }
+
+  margin-top: 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+mat-card-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+
+  button {
+    margin-bottom: 10px;
+  }
+}
+
+mat-form-field {
+  margin-bottom: 10px;
+}
+
+.form-icons {
+  color: #5f6368;
+}
+
+mat-checkbox {
+  margin-left: 10px;
+  margin-bottom: 10px;
+}

@@ -45,7 +45,7 @@ export interface CrudDialogData {
   targetPath?: string;
 
   /**
-   * changes getRawEntity to set
+   * changes generateRawEntity to set
    * attributes.type to sectionConfig.key and
    * attributes.class to entityConfig.descriptor
    */

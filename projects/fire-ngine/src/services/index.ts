@@ -6,4 +6,4 @@ export { StorageService } from './firebase/storage.service';
 
 export { CoreService } from './app/core.service';
 // export { AppService } from './app/app.service';
-export { UserService } from './app/user.service';
+export { UserService } from './data/user.service';

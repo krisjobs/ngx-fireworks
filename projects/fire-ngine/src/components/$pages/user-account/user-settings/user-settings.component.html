@@ -1,0 +1,33 @@
+<div class="user-settings">
+    <mat-accordion>
+        <!-- localstorage -->
+        <mat-expansion-panel hideToggle>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Local storage
+                </mat-panel-title>
+
+                <mat-panel-description>
+                    Clear local storage and more
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <p>Clear local storage if you experience any problems.</p>
+
+            <button mat-stroked-button
+                    color="primary"
+                    class="clear-local-storage-button"
+                    (click)="clearLocalStorage()">
+                <span>
+                    Clear local storage
+                </span>
+
+                <mat-icon matSuffix
+                          color='warn'
+                          class="material-icons-round">
+                    clear
+                </mat-icon>
+            </button>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>

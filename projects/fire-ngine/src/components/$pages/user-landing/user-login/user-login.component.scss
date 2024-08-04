@@ -1,0 +1,45 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 42px;
+}
+
+.login-card {
+  width: 420px;
+}
+
+mat-card-content {
+  mat-form-field {
+    width: 100%;
+  }
+
+  margin-top: 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+mat-card-actions {
+  margin-top: 42px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+
+  button {
+    margin-bottom: 10px;
+  }
+}
+
+mat-form-field {
+  margin-bottom: 10px;
+}
+
+.form-icons {
+  color: #5f6368;
+}
+
+[mat-raised-button] {
+  width: 200px !important;
+  margin: 20px auto 60px auto;
+}

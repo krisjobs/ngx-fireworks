@@ -1,0 +1,321 @@
+<div class="user-settings">
+    <form [formGroup]="userForm">
+        <mat-accordion *ngIf="user$$ | async as user">
+            <!-- username -->
+            <mat-expansion-panel hideToggle>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Username
+                    </mat-panel-title>
+
+                    <mat-panel-description>
+                        {{ user.displayName }}
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>
+                        Username
+                    </mat-label>
+
+                    <input matInput
+                           autocomplete="username"
+                           #usernameInput
+                           formControlName="username"
+                           placeholder="">
+
+                    <mat-error *ngIf="usernameControl.hasError('required')">
+                        Please enter a valid username
+                    </mat-error>
+
+                    <button matSuffix
+                            mat-icon-button
+                            (click)="resetUsername()">
+                        <mat-icon class='material-icons-round'>
+                            rotate_left
+                        </mat-icon>
+                    </button>
+                </mat-form-field>
+
+                <button mat-stroked-button
+                        class="submit-button"
+                        color='primary'
+                        [disabled]="!usernameControl.valid"
+                        (click)="updateUsername(usernameInput.value)">
+                    <mat-icon matSuffix
+                              class="material-icons-round">
+                        done_outline
+                    </mat-icon>
+
+                    <span>
+                        Submit
+                    </span>
+                </button>
+
+                <p>Currently for cosmetic purposes only.</p>
+            </mat-expansion-panel>
+
+            <!-- email -->
+            <mat-expansion-panel hideToggle>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Email
+                    </mat-panel-title>
+
+                    <mat-panel-description>
+                        {{ user.email }}
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>
+                        Email
+                    </mat-label>
+
+                    <input matInput
+                           #emailInput
+                           formControlName="email"
+                           placeholder="">
+
+                    <mat-error *ngIf="emailControl.hasError('email') && !emailControl.hasError('required')">
+                        Please enter a valid email address
+                    </mat-error>
+
+                    <mat-error *ngIf="emailControl.hasError('required')">
+                        Email is <strong>required</strong>
+                    </mat-error>
+
+                    <button *ngIf="emailInput.value"
+                            matSuffix
+                            mat-icon-button
+                            (click)="clearEmail()">
+                        <mat-icon class='material-icons-round'>
+                            close
+                        </mat-icon>
+                    </button>
+                </mat-form-field>
+
+                <button mat-stroked-button
+                        class="submit-button"
+                        color='primary'
+                        [disabled]="!emailControl.valid"
+                        (click)="updateEmail(emailInput.value)">
+                    <mat-icon matSuffix
+                              class="material-icons-round">
+                        done_outline
+                    </mat-icon>
+
+                    <span>
+                        Submit
+                    </span>
+                </button>
+
+                <p>
+                    This is the primary content of the panel.
+                </p>
+            </mat-expansion-panel>
+
+            <!-- avatar -->
+            <mat-expansion-panel hideToggle>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Avatar
+                    </mat-panel-title>
+
+                    <mat-panel-description>
+                        <mat-icon class="material-icons-round">
+                            {{ !user.photoURL ? 'not_interested' : 'sentiment_satisfied_alt' }}
+                        </mat-icon>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>
+                        Avatar URL
+                    </mat-label>
+
+                    <input matInput
+                           #avatarInput
+                           formControlName="avatarUrl"
+                           placeholder="">
+
+                    <mat-error *ngIf="avatarControl.hasError('required')">
+                        Please enter a valid URL
+                    </mat-error>
+
+                    <button matSuffix
+                            mat-icon-button
+                            (click)="resetAvatar()">
+                        <mat-icon class='material-icons-round'>
+                            rotate_left
+                        </mat-icon>
+                    </button>
+                </mat-form-field>
+
+                <button mat-stroked-button
+                        class="submit-button"
+                        color='primary'
+                        [disabled]="!avatarControl.valid"
+                        (click)="updateAvatar(avatarInput.value)">
+                    <mat-icon matSuffix
+                              class="material-icons-round">
+                        done_outline
+                    </mat-icon>
+
+                    <span>
+                        Submit
+                    </span>
+                </button>
+
+                <p>
+                    The avatar is shown in the upper right corner of the header.
+                </p>
+            </mat-expansion-panel>
+
+            <!-- verified -->
+            <mat-expansion-panel hideToggle>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Verified
+                    </mat-panel-title>
+
+                    <mat-panel-description>
+                        <mat-icon class="material-icons-round">
+                            {{ !user.emailVerified ? 'no_accounts' : 'verified_user' }}
+                        </mat-icon>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <p *ngIf="!!user.emailVerified; else notVerified">
+                    Your email has been verified.
+                </p>
+
+                <ng-template #notVerified>
+                    <p>
+                        Please click on the <i>verification link</i> you received from <u>{{ verificationSender }}</u>
+                        on registration.
+                    </p>
+
+                    <p>
+                        Be so kind as to check your <b>spam/junk</b> email folder, if you can't find it in your inbox.
+                    </p>
+                </ng-template>
+            </mat-expansion-panel>
+
+            <!-- password -->
+            <mat-expansion-panel hideToggle>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Password
+                    </mat-panel-title>
+
+                    <mat-panel-description>
+                        <mat-icon class="material-icons-round">
+                            security
+                        </mat-icon>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <!-- old pass -->
+                <mat-form-field appearance="outline">
+                    <mat-label>
+                        Old password
+                    </mat-label>
+
+                    <input matInput
+                           autocomplete="current-password"
+                           #oldPassInput
+                           type="password"
+                           formControlName="oldPassword"
+                           placeholder="*">
+
+                    <mat-error *ngIf="oldPassControl.hasError('minlength') && !oldPassControl.hasError('required')">
+                        Minimum password length: 6 characters
+                    </mat-error>
+
+                    <mat-error *ngIf="oldPassControl.hasError('required')">
+                        Password is <strong>required</strong>
+                    </mat-error>
+
+                    <button *ngIf="oldPassInput.value"
+                            matSuffix
+                            mat-icon-button
+                            (click)="clearOldPass()">
+                        <mat-icon class='material-icons-round'>
+                            close
+                        </mat-icon>
+                    </button>
+                </mat-form-field>
+
+                <mat-divider></mat-divider>
+
+                <br>
+
+                <!-- new pass -->
+                <mat-form-field appearance="outline">
+                    <mat-label>
+                        New password
+                    </mat-label>
+
+                    <input matInput
+                           autocomplete="new-password"
+                           #newPassInput
+                           type="password"
+                           formControlName="newPassword"
+                           placeholder="*">
+                    <mat-error *ngIf="newPassControl.hasError('minlength') && !newPassControl.hasError('required')">
+                        Minimum password length: 6 characters
+                    </mat-error>
+
+                    <mat-error *ngIf="newPassControl.hasError('required')">
+                        Password is <strong>required</strong>
+                    </mat-error>
+
+                    <button *ngIf="newPassInput.value"
+                            matSuffix
+                            mat-icon-button
+                            (click)="clearNewPass()">
+                        <mat-icon class='material-icons-round'>
+                            close
+                        </mat-icon>
+                    </button>
+                </mat-form-field>
+
+                <button mat-stroked-button
+                        class="submit-button"
+                        color='primary'
+                        [disabled]="!oldPassControl.valid || !newPassControl.valid"
+                        (click)="updatePassword(oldPassInput.value, newPassInput.value)">
+                    <mat-icon matSuffix
+                              class="material-icons-round">
+                        done_outline
+                    </mat-icon>
+
+                    <span>
+                        Submit
+                    </span>
+                </button>
+
+                <p>
+                    This is the primary content of the panel.
+                </p>
+            </mat-expansion-panel>
+
+            <!-- user since -->
+            <mat-expansion-panel hideToggle
+                                 disabled>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        User since
+                    </mat-panel-title>
+
+                    <mat-panel-description>
+                        {{ user.metadata.creationTime }}
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <p>This is the primary content of the panel.</p>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </form>
+</div>

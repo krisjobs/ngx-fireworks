@@ -35,4 +35,20 @@ export class NotificationService {
     this.snackBar.open(message, action, config);
   }
 
+  public throwErrorIfNotExist<T>(message: string, object?: T | null, context?: any): T {
+    if (!object) {
+      console.error(message, context);
+      // this.notificationService.error(message);
+      // this.router.navigateByUrl('/');
+      throw new Error(message);
+    }
+
+    return object;
+  }
+
+  public throwError(message: string, context?: any): never {
+    this.error(message);
+    console.error(message, context);
+    throw new Error(message);
+  }
 }

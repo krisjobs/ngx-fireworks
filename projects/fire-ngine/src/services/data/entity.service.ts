@@ -26,7 +26,7 @@ import { getParamsFromUrl } from 'src/app/styleguide/utility';
 
 import { SECTION_CONFIG } from 'src/app/styleguide/services/app.providers';
 import { NotificationService } from 'src/app/styleguide/services/notification.service';
-import { EntityRepository } from './entity.repository';
+import { EntityRepository } from './repository.service';
 import { UserService } from '../../users/services/user.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { AppService } from 'src/app/styleguide/services/app.service';
@@ -45,301 +45,8 @@ import { CrudDialogComponent } from '../components/organisms/crud-dialog/crud-di
 @Injectable()
 export class EntityService {
 
-  private $activeTabIdx = new BehaviorSubject<number>(JSON.parse(
-    localStorage.getItem(
-      `${this.sectionConfig.sectionKey}.activeTabIdx`
-    ) || '0'
-  ));
-  private $activeFormIdx = new BehaviorSubject<number>(JSON.parse(
-    localStorage.getItem(
-      `${this.sectionConfig.sectionKey}.activeFormIdx`
-    ) || '0'
-  ));
-  public activeTabIdx$ = this.$activeTabIdx.asObservable();
-  public activeFormIdx$ = this.$activeFormIdx.asObservable();
 
-  public get activeTabIdx(): number {
-    return this.$activeTabIdx.value;
-  }
 
-  public get activeFormIdx(): number {
-    return this.$activeFormIdx.value;
-  }
-
-  public set activeTabIdx(value: number) {
-    this.$activeTabIdx.next(value);
-
-    this.querySettings = {
-      sectionFilters: this.sectionConfig.sectionFilters ?? [],
-      tabFilters: this.entityConfig.tabFilters ?? []
-    };
-
-    localStorage.setItem(
-      `${this.sectionConfig.sectionKey}.activeTabIdx`,
-      JSON.stringify(value)
-    );
-  }
-
-  public set activeFormIdx(value: number) {
-    if (value < (this.entityConfig.templateSettings ?? []).length) {
-      this.$activeFormIdx.next(value);
-    } else {
-      return;
-    }
-
-    // this.querySettings = {
-    //   sectionFilters: this.sectionConfig.sectionFilters ?? [],
-    //   tabFilters: this.entityConfig.tabFilters ?? []
-    // };
-
-    localStorage.setItem(
-      `${this.sectionConfig.sectionKey}.activeFormIdx`,
-      JSON.stringify(value)
-    );
-  }
-
-  private $viewSettings = this.sectionConfig.tabs.map(
-    (tab, idx) => new BehaviorSubject<ViewSettings>({
-      ...tab.viewSettings,
-      ...JSON.parse(
-        localStorage.getItem(
-          `${this.sectionConfig.sectionKey}.${this.entityConfig.descriptor}.viewSettings.${idx}`
-        ) || '{}'
-      )
-    })
-  );
-
-  private $querySettings = this.sectionConfig.tabs.map(
-    (tab, idx) => new BehaviorSubject<QuerySettings>({
-      ...tab.querySettings,
-      ...JSON.parse(
-        localStorage.getItem(
-          `${this.sectionConfig.sectionKey}.${this.entityConfig.descriptor}.querySettings.${idx}`
-        ) || '{}'
-      )
-    })
-  );
-
-  private $templateSettings = this.sectionConfig.tabs.map(
-    (tab, tabIdx) => (tab.templateSettings ?? []).map(
-      (settings, formIdx) => new BehaviorSubject<QuerySettings>({
-        ...settings,
-        ...JSON.parse(
-          localStorage.getItem(
-            `${this.sectionConfig.sectionKey}.${this.entityConfig.descriptor}.templateSettings.${tabIdx}.${formIdx}`
-          ) || '{}'
-        )
-      })
-    )
-  );
-
-  private $contextSettings = this.sectionConfig.tabs.map(
-    (tab, tabIdx) => (tab.contextSettings ?? []).map(
-      (settings, formIdx) => new BehaviorSubject<ViewSettings>({
-        ...settings,
-        ...JSON.parse(
-          localStorage.getItem(
-            `${this.sectionConfig.sectionKey}.${this.entityConfig.descriptor}.contextSettings.${tabIdx}.${formIdx}`
-          ) || '{}'
-        )
-      })
-    )
-  );
-
-  public viewSettings$ = combineLatest([
-    this.activeTabIdx$,
-    this.appService.currentUrl$,
-    this.authService.userRoles$$
-  ]).pipe(
-    switchMap(
-      ([activeTabIdx, url, roles]) => this.$viewSettings[activeTabIdx].pipe(
-        map(
-          viewSettings => {
-            if (!!this.entityConfig.viewSettingsStrategy) {
-              return {
-                ...viewSettings,
-                ...this.entityConfig.viewSettingsStrategy({
-                  url: getParamsFromUrl(url),
-                  roles
-                })
-              }
-            }
-
-            return viewSettings;
-          }
-        )
-      )
-    )
-  );
-
-  public querySettings$ = this.activeTabIdx$.pipe(
-    switchMap(
-      activeTabIdx => this.$querySettings[activeTabIdx].asObservable()
-    )
-  );
-
-  public _templateSettings$ = combineLatest([
-    this.activeTabIdx$,
-    this.activeFormIdx$,
-  ]).pipe(
-    switchMap(
-      ([activeTabIdx, activeFormIdx]) => (this.$templateSettings[activeTabIdx][activeFormIdx]?.asObservable() ?? of(null)).pipe(
-        map(
-          settings => [settings, activeFormIdx] as [QuerySettings, number]
-        )
-      )
-    ),
-  );
-
-  public templateSettings$ = this._templateSettings$.pipe(
-    map(
-      ([settings]) => settings
-    )
-  );
-
-  public contextSettings$ = combineLatest([
-    this.activeTabIdx$,
-    this.activeFormIdx$,
-    this.appService.currentUrl$,
-  ]).pipe(
-    switchMap(
-      ([activeTabIdx, activeFormIdx, url]) => this.$contextSettings[activeTabIdx][activeFormIdx]?.asObservable() ?? of(null).pipe(
-        map(
-          viewSettings => {
-            // if (!!this.entityConfig.viewSettingsStrategy) {
-            //   return {
-            //     ...viewSettings,
-            //     ...this.entityConfig.viewSettingsStrategy(url)
-            //   }
-            // }
-
-            return viewSettings;
-          }
-        )
-      )
-    )
-  );
-
-  public get viewSettings(): ViewSettings {
-    return this.$viewSettings[this.activeTabIdx].value;
-  }
-
-  public get querySettings(): QuerySettings {
-    return this.$querySettings[this.activeTabIdx].value;
-  }
-
-  public get templateSettings(): QuerySettings {
-    return this.$templateSettings[this.activeTabIdx][this.activeFormIdx]?.value;
-  }
-
-  public get contextSettings(): ViewSettings {
-    return this.getContextSettings();
-  }
-
-  public getContextSettings(formIdx = this.activeFormIdx): ViewSettings {
-    return this.$contextSettings[this.activeTabIdx][formIdx]?.value;
-  }
-
-  public set viewSettings(viewSettings: Partial<ViewSettings>) {
-    const {
-      ...defaultSettings
-    } = this.entityConfig.viewSettings;
-
-    const newSettings = !!viewSettings ?
-      {
-        ...this.viewSettings,
-        ...viewSettings
-      } :
-      {
-        ...this.viewSettings,
-        ...defaultSettings,
-      };
-
-    this.$viewSettings[this.activeTabIdx].next(newSettings);
-
-    localStorage.setItem(
-      `${this.sectionConfig.sectionKey}.${this.entityConfig.descriptor}.viewSettings.${this.activeTabIdx}`,
-      JSON.stringify(newSettings)
-    );
-  }
-
-  public set querySettings(querySettings: Partial<QuerySettings>) {
-    const {
-      paginator,
-      tabFilters,
-      sectionFilters,
-      ...defaultSettings
-    } = this.entityConfig.querySettings;
-
-    const newSettings = !!querySettings ?
-      {
-        ...this.querySettings,
-        ...querySettings
-      } :
-      {
-        ...this.querySettings,
-        ...defaultSettings
-      };
-
-    this.$querySettings[this.activeTabIdx].next(newSettings);
-
-    localStorage.setItem(
-      `${this.sectionConfig.sectionKey}.${this.entityConfig.descriptor}.querySettings.${this.activeTabIdx}`,
-      JSON.stringify(newSettings)
-    );
-  }
-
-  public set templateSettings(templateSettings: Partial<QuerySettings>) {
-    const {
-      paginator,
-      tabFilters,
-      sectionFilters,
-      ...defaultSettings
-    } = this.entityConfig.templateSettings![this.$activeFormIdx.value];
-
-    const newSettings: QuerySettings = !!templateSettings ?
-      {
-        ...this.templateSettings,
-        ...templateSettings
-      } :
-      {
-        ...this.templateSettings,
-        ...defaultSettings
-      };
-
-    this.$templateSettings[this.activeTabIdx][this.$activeFormIdx.value].next(newSettings);
-
-    localStorage.setItem(
-      `${this.sectionConfig.sectionKey}.${this.entityConfig.descriptor}.templateSettings.${this.activeTabIdx}.${this.activeFormIdx}`,
-      JSON.stringify(newSettings)
-    );
-  }
-
-  public set contextSettings(templateSettings: Partial<ViewSettings>) {
-    this.setContextSettings(templateSettings);
-  }
-
-  public setContextSettings(templateSettings: Partial<ViewSettings>, formIdx = this.activeFormIdx) {
-    const {
-      ...defaultSettings
-    } = this.entityConfig.contextSettings![this.$activeFormIdx.value];
-
-    const newSettings: ViewSettings = !!templateSettings ?
-      {
-        ...this.getContextSettings(),
-        ...templateSettings
-      } :
-      {
-        ...this.getContextSettings(),
-        ...defaultSettings
-      };
-
-    localStorage.setItem(
-      `${this.sectionConfig.sectionKey}.${this.entityConfig.descriptor}.contextSettings.${this.activeTabIdx}.${this.activeFormIdx}`,
-      JSON.stringify(newSettings)
-    );
-    this.$contextSettings[this.activeTabIdx][formIdx].next(newSettings);
-  }
 
   public get entityConfig(): EntityConfig {
     return this.sectionConfig.tabs[this.activeTabIdx];
@@ -351,50 +58,6 @@ export class EntityService {
 
   public get templateConfig(): EntityConfig | undefined {
     return this.sectionConfig.templates?.[this.activeFormIdx];
-  }
-
-  public tableQuickAction$: Observable<EntityAction> = !!this.entityConfig.documentActions.length ?
-    this.viewSettings$.pipe(
-      map(viewsSettings => this.getAction(viewsSettings.tableQuickActionId))
-    ) :
-    NEVER;
-
-  public cardQuickAction$: Observable<EntityAction> = !!this.entityConfig.documentActions.length ?
-    this.viewSettings$.pipe(
-      map(viewsSettings => this.getAction(viewsSettings.cardQuickActionId))
-    ) :
-    NEVER;
-
-  public toolbarPinnedAction$: Observable<EntityAction> = !!this.entityConfig.collectionActions.length ?
-    this.viewSettings$.pipe(
-      map(viewsSettings => this.getPinnedAction(viewsSettings.toolbarPinnedActionId))
-    ) :
-    NEVER;
-
-  public resetTemplateSettings() {
-    this.$templateSettings.forEach(
-      $templateSettings => {
-        const nextValue = this.entityConfig.templateSettings![this.activeTabIdx];
-        $templateSettings.forEach(
-          (_, formIdx) => {
-            this.$templateSettings[this.activeTabIdx][formIdx].next(nextValue);
-          }
-        );
-      }
-    );
-  }
-
-  public resetContextSettings() {
-    this.$contextSettings.forEach(
-      $contextSettings => {
-        const nextValue = this.entityConfig.contextSettings![this.activeTabIdx];
-        $contextSettings.forEach(
-          (_, formIdx) => {
-            this.$contextSettings[this.activeTabIdx][formIdx].next(nextValue);
-          }
-        );
-      }
-    );
   }
 
   constructor(
@@ -409,150 +72,11 @@ export class EntityService {
   ) {
   }
 
-  public getTargetPathFromUrl(url: UrlParams): string {
-    if (!!this.entityConfig.bypassTargetPath) {
-      return this.entityConfig.firestorePath;
-    }
 
-    const {
-      moduleName,
-      rootType,
-      rootId,
-      nestedType,
-      nestedId,
-      queryType,
-      queryId,
-    } = url;
 
-    if (!!rootType && !!rootId) {
-      if (!this.sectionConfig.related) {
-        console.error(this.sectionConfig);
-        throw new Error(`No parent config for type ${rootType}`);
-      }
 
-      const {
-        config,
-        entityIdx
-      } = this.sectionConfig.related[rootType];
-      const parentPath = config.tabs[entityIdx].firestorePath;
-      const entityPath = this.entityConfig.firestorePath;
 
-      if (!!nestedType && !!nestedId) {
-        return `${parentPath}/${rootId}/${nestedType}/${nestedId}/${entityPath}`;
-      }
-
-      if (!!queryType && !!queryId && nestedType === 'media') {
-        const {
-          config: queryConfig,
-          entityIdx: queryEntityIdx,
-        } = this.sectionConfig.related[queryType];
-
-        const queryParentPath = queryConfig.tabs[queryEntityIdx].firestorePath;
-
-        return `${queryParentPath}/${queryId}/${rootType}/${rootId}/${entityPath}`;
-      }
-
-      return `${parentPath}/${rootId}/${entityPath}`;
-    } else if (!!nestedType && !!nestedId) {
-      if (!this.sectionConfig.related) {
-        console.error(this.sectionConfig);
-        throw new Error(`No parent config for type ${rootType}`);
-      }
-
-      const {
-        config,
-        entityIdx,
-      } = this.sectionConfig.related[nestedType];
-      const parentPath = config.tabs[entityIdx].firestorePath;
-
-      const entityPath = this.entityConfig.firestorePath;
-
-      return `${parentPath}/${nestedId}/${entityPath}`;
-    } else if (!!queryType && !!queryId) {
-      if (!this.sectionConfig.related) {
-        console.error(this.sectionConfig);
-        throw new Error(`No parent config for type ${rootType}`);
-      }
-
-      const {
-        config,
-        entityIdx,
-      } = this.sectionConfig.related[queryType];
-      const parentPath = config.tabs[entityIdx].firestorePath;
-
-      const entityPath = this.entityConfig.firestorePath;
-
-      return `${parentPath}/${queryId}/${entityPath}`;
-    } else {
-      return this.entityConfig.firestorePath;
-    }
-  }
-
-  public getPinnedAction(actionId: string) {
-    const pinnedAction = this.entityConfig.collectionActions.find(
-      action => action.id === actionId
-    );
-
-    if (pinnedAction) {
-      return pinnedAction;
-    } else {
-      throw new Error(`Invalid  collection actionId -> ${actionId}`);
-    }
-  }
-
-  public getAction(actionId: string) {
-    const action = this.entityConfig.documentActions.concat(this.entityConfig.collectionActions).find(
-      action => action.id === actionId
-    );
-
-    if (action) {
-      return action;
-    } else {
-      throw new Error(`Invalid actionId -> ${actionId}`);
-    }
-  }
-
-  public isDefaultQuery(): boolean {
-    const {
-      paginator: paginator1,
-      tabFilters: tabFilters1,
-      sectionFilters: sectionFilters1,
-      ...settings1
-    } = this.querySettings;
-
-    const {
-      paginator: paginator2,
-      tabFilters: tabFilters2,
-      sectionFilters: sectionFilters2,
-      ...settings2
-    } = this.entityConfig.querySettings;
-
-    // console.warn(settings1)
-    // console.warn(settings2)
-    return JSON.stringify(settings1) !== JSON.stringify(settings2);
-  }
-
-  public isDefaultTemplateQuery(): boolean {
-    const {
-      paginator: paginator1,
-      tabFilters: tabFilters1,
-      sectionFilters: sectionFilters1,
-      ...settings1
-    } = this.templateSettings;
-
-    const {
-      paginator: paginator2,
-      tabFilters: tabFilters2,
-      sectionFilters: sectionFilters2,
-      ...settings2
-    } = this.entityConfig.templateSettings![this.$activeFormIdx.value];
-
-    // console.warn('isDefaultTemplateQuery-1', settings1)
-    // console.warn('isDefaultTemplateQuery-2', settings2)
-    return JSON.stringify(settings1) !== JSON.stringify(settings2);
-  }
-
-  public getRawEntity(parent?: Entity, sectionAsType = false): Partial<Entity> {
+  public generateRawEntity(parent?: Entity, sectionAsType = false): Partial<Entity> {
     const now = Timestamp.now();
 
     if (!this.authService.currentUser) {
@@ -601,95 +125,9 @@ export class EntityService {
     } as Partial<Entity>;
   }
 
-  public openCrudDialog(dialogData: CrudDialogData) {
-    const dialogRef = this.dialog.open(
-      CrudDialogComponent, {
-      data: dialogData
-    });
-
-    const newId = dialogData.newId
-
-    dialogRef.afterClosed()
-      .pipe(
-        tap(() => this.appService.loadingOn()),
-        filter((result: Entity | null) => !!result),
-        map((result) => dialogData.onRequest ? dialogData.onRequest(result as Entity) : result as Entity),
-
-        switchMap((entity) => {
-          if (dialogData.customRequest$) {
-            return this.appService.showLoaderUntilCompleted(dialogData.customRequest$(entity, dialogData));
-          }
-
-          switch (dialogData.operation) {
-            case 'create': {
-              const {
-                targetPath,
-                subcollections,
-                copySubcollectionAttributes,
-                pathOverride,
-              } = dialogData;
-
-              return this.repository.createEntity$(
-                entity,
-                this.entityConfig.firestorePath,
-                newId,
-                pathOverride ?? targetPath,
-                subcollections,
-                copySubcollectionAttributes
-              );
-            }
-            case 'update': {
-              return this.repository.editEntity$(
-                entity,
-              );
-            }
-            case 'delete': {
-              const {
-                markedForDelete,
-                subcollections
-              } = dialogData;
-
-              return this.repository.removeEntity$(
-                entity,
-                markedForDelete,
-                subcollections
-              );
-            }
-            default:
-              throw new Error('Invalid operation.')
-          }
-        }),
-
-        // finalize(() => this.appService.loadingOff())
-      )
-      .subscribe({
-        next: (entity) => {
-          // this.appService.loadingOn();
-
-          dialogData.onResponse?.(entity);
-
-          console.warn(entity)
-
-          const successMessage = `${dialogData.operation} ${this.entityConfig.descriptor} success.`;
-          console.log(successMessage);
-          this.notificationService.message('Sucess.');
-          // this.appService.loadingOff();
-        },
-        error: (error: Error) => {
-          const errorMessage = `${dialogData.operation} ${this.entityConfig.descriptor} error:\n=======\n\n${error.message}`;
-          console.error(errorMessage, dialogData);
-          this.notificationService.error('Error!');
-        },
-        complete: () => {
-          console.log(`${dialogData.operation} dialog closed...`);
-          this.appService.loadingOff();
-        }
-      });
-  }
-
   public createNewEntityDialog(entity?: Partial<Entity>, customData?: Partial<CrudDialogData>) {
     const parentConfig = customData?.config;
-    const newEntity = this.getRawEntity(customData?.context?.query!, !!customData?.sectionAsType);
+    const newEntity = this.generateRawEntity(customData?.context?.query!, !!customData?.sectionAsType);
 
     console.warn('createNewEntityDialog ===>\n', newEntity, entity)
 
@@ -827,13 +265,82 @@ export class EntityService {
     }
   }
 
-  public openConfigSheet(sheetData: ConfigSheetData) {
-    const sheetRef = this.sheet.open(
-      ConfigSheetComponent,
-      {
-        data: sheetData
+  public sortEntities(entities: Entity[], settings: SortSettings): Entity[] {
+    const {
+      sortType,
+      sortDirection,
+      sortProperty,
+      tableSortProperty,
+      tableSortDirection,
+    } = settings;
+
+    if (!sortType && !tableSortProperty) {
+      return entities;
+    } else if (!!sortType && !!tableSortProperty) {
+      const tableSort = (e1: Entity, e2: Entity) => {
+        if (tableSortDirection === 'asc') {
+          if (eval(`e1.${tableSortProperty}`) > eval(`e2.${tableSortProperty}`)) {
+            return 1;
+          } else if (eval(`e1.${tableSortProperty}`) < eval(`e2.${tableSortProperty}`)) {
+            return -1;
+          }
+        } else {
+          if (eval(`e1.${tableSortProperty}`) > eval(`e2.${tableSortProperty}`)) {
+            return -1;
+          } else if (eval(`e1.${tableSortProperty}`) < eval(`e2.${tableSortProperty}`)) {
+            return 1;
+          }
+        }
+
+        return 0;
       }
-    );
+
+      return [...entities].sort(
+        (e1, e2) => {
+
+          if (sortDirection === 'asc') {
+            if (eval(`e1.${sortProperty}`) > eval(`e2.${sortProperty}`)) {
+              return 1;
+            } else if (eval(`e1.${sortProperty}`) < eval(`e2.${sortProperty}`)) {
+              return -1;
+            } else {
+              return tableSort(e1, e2);
+            }
+          } else {
+            if (eval(`e1.${sortProperty}`) > eval(`e2.${sortProperty}`)) {
+              return -1;
+            } else if (eval(`e1.${sortProperty}`) < eval(`e2.${sortProperty}`)) {
+              return 1;
+            } else {
+              return tableSort(e1, e2);
+            }
+          }
+        }
+      );
+    } else {
+      const property = !!sortType ? sortProperty : tableSortProperty;
+      const direction = !!sortType ? sortDirection : tableSortDirection;
+
+      return [...entities].sort(
+        (e1, e2) => {
+          if (direction === 'asc') {
+            if (eval(`e1.${property}`) > eval(`e2.${property}`)) {
+              return 1;
+            } else if (eval(`e1.${property}`) < eval(`e2.${property}`)) {
+              return -1;
+            }
+          } else {
+            if (eval(`e1.${property}`) > eval(`e2.${property}`)) {
+              return -1;
+            } else if (eval(`e1.${property}`) < eval(`e2.${property}`)) {
+              return 1;
+            }
+          }
+
+          return 0;
+        }
+      )
+    }
   }
 
   public onPaginatorChange(
@@ -906,5 +413,60 @@ export class EntityService {
     } else {
       this.templateSettings = querySettings;
     }
+  }
+
+  // TODO finish implementation
+  /**
+   * example
+        // this.entityService.resetCounter(yacht!, 'equipment', 'attributes.isActive', 'data.retailConfigurationPrice')
+   *
+   */
+  public resetCounter$(
+    parent: Partial<Entity>,
+    subcollectionPath: string,
+    propertyPath: string,
+    counterPath: string,
+  ) {
+
+    const targetPath = `${parent.path}/${subcollectionPath}`;
+
+    const now = Timestamp.now();
+
+    return this.firestoreService.getDocs$(targetPath).pipe(
+      map((docs) => docs as Entity[]),
+      switchMap(entities => {
+
+        eval(`parent.${counterPath} = 0`);
+
+        return this.firestoreService.batchWrite$({
+          update: entities
+            .map(
+              entity => {
+                eval(`entity.${propertyPath} = false`);
+                console.warn(targetPath, entity.id)
+                return [
+                  {
+                    ...entity,
+                    attributes: {
+                      ...entity.attributes,
+                    },
+                    stats: {
+                      ...entity.stats,
+                      updatedAt: now,
+                      updatedBy: this.authService.loggedUser.uid,
+                    }
+                  } as Entity,
+                  this.firestoreService.getDocRef(targetPath, entity.id)
+                ]
+              }
+            ).concat([
+              {
+                ...parent
+              } as Entity,
+              this.firestoreService.getDocRef(parent.path!, parent.id!)
+            ]) as any
+        })
+      })
+    );
   }
 }

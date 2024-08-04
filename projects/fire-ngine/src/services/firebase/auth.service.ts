@@ -65,7 +65,7 @@ export class AuthService {
       const customClaims = token?.claims as unknown as UserCustomClaims | null;
       return customClaims ? customClaims.roles : null;
     }),
-  )
+  );
 
   public currentUser$$: Observable<User | null> = fromEventPattern(
     observer => onAuthStateChanged(this.auth, observer)
