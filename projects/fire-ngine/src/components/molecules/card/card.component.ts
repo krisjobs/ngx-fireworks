@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 // ===================== MODELS =====================
 
 import { ChipConfig, EntityAction, UrlEntities } from 'src/app/styleguide';
-import { Entity, UserRoles } from 'functions/src/styleguide/models';
+import { Entity, UserRole } from 'functions/src/styleguide/models';
 
 // ===================== UTILITY =====================
 
@@ -36,7 +36,7 @@ export class CardComponent implements OnInit {
   public showQuickAction!: boolean;
 
   @Input()
-  public roles!: UserRoles;
+  public roles!: UserRole;
 
   public cardConfig = this.entityService.entityConfig.gridCard;
 

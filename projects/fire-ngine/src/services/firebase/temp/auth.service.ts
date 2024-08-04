@@ -26,7 +26,7 @@ import { Observable, fromEventPattern, map, from, switchMap, tap, of } from 'rxj
 
 // ===================== MODELS =====================
 
-import { UserRoles, UserProfileUpdate } from 'functions/src/styleguide/models';
+import { UserRole, UserProfileUpdate } from 'functions/src/styleguide/models';
 
 // ===================== UTILITY =====================
 
@@ -66,7 +66,7 @@ export class AuthService {
     switchMap((user) => user ? user.getIdTokenResult() : of(null)),
   );
 
-  public userRoles$$: Observable<UserRoles> = this.idTokenResult$$.pipe(
+  public userRoles$$: Observable<UserRole> = this.idTokenResult$$.pipe(
     map(token => token?.claims as any || { admin: false })
   )
 

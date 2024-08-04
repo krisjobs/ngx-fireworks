@@ -8,7 +8,7 @@ import {
   EntityAction, EntityFilter, EntitySettings,
   QuerySettings, ViewSettings,
 } from "..";
-import { Entity, EntityAttributes, User, UserRoles } from "functions/src/styleguide/models";
+import { Entity, EntityAttributes, User, UserRole } from "functions/src/styleguide/models";
 
 // ===================== DEFINITIONS =====================
 
@@ -262,5 +262,5 @@ export interface ConfigParams<T extends Entity = Entity> {
   querySettings: QuerySettings;
   entity: T;
   entities: any; // used to be (T | null | undefined)[], but the elements are of different type
-  roles: UserRoles;
+  roles: UserRole;
 }

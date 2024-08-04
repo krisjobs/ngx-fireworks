@@ -5,7 +5,7 @@ import { debounceTime, map, Subscription } from 'rxjs';
 // ===================== MODELS =====================
 
 import { FormField, EntityFilter, SelectOption, AutocompleteGroup, UrlEntities } from 'src/app/styleguide';
-import { UserRoles } from 'functions/src/styleguide/models';
+import { UserRole } from 'functions/src/styleguide/models';
 
 // ===================== UTILITY =====================
 
@@ -22,7 +22,7 @@ export class FiltersComponent implements OnInit {
   public context!: UrlEntities;
 
   @Input()
-  public roles!: UserRoles;
+  public roles!: UserRole;
 
   @Input()
   public forTemplates: boolean = false;

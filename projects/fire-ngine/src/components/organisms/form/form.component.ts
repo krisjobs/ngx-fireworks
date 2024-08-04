@@ -7,7 +7,7 @@ import { debounceTime, Subscription } from 'rxjs';
 // ===================== MODELS =====================
 
 import { AutocompleteGroup, FormField, FormStep, SelectOption, UrlEntities, UrlParams } from 'src/app/styleguide';
-import { Entity, UserRoles } from 'functions/src/styleguide/models';
+import { Entity, UserRole } from 'functions/src/styleguide/models';
 
 // ===================== UTILITY =====================
 
@@ -51,7 +51,7 @@ export class FormComponent implements OnInit {
   public contextEntities: Entity[] | null = null;
 
   @Input()
-  public roles!: UserRoles;
+  public roles!: UserRole;
 
   public formEntity!: Partial<Entity>
 

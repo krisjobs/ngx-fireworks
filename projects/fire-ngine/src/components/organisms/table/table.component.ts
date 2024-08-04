@@ -10,7 +10,7 @@ import {
   ConfigParams, SectionConfig, SortSettings, TableColumn,
   UrlEntities, UrlParams, ViewSettings
 } from 'src/app/styleguide';
-import { Entity, UserRoles } from 'functions/src/styleguide/models';
+import { Entity, UserRole } from 'functions/src/styleguide/models';
 
 // ===================== UTILITY =====================
 
@@ -50,7 +50,7 @@ export class TableComponent implements OnInit {
   public forTemplates: boolean = false;
 
   @Input()
-  public roles!: UserRoles;
+  public roles!: UserRole;
 
   @Output('selectedEntity')
   public $selectedEntity = new EventEmitter<Entity>();

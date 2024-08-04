@@ -9,7 +9,7 @@ import {
   ChipConfig, ViewSettings, QuerySettings,
   UrlEntities
 } from 'src/app/styleguide';
-import { UserRoles, Entity } from 'functions/src/styleguide/models';
+import { UserRole, Entity } from 'functions/src/styleguide/models';
 
 // ===================== UTILITY =====================
 
@@ -36,7 +36,7 @@ export class ToolbarComponent implements OnInit {
   public context!: UrlEntities;
 
   @Input()
-  public roles!: UserRoles;
+  public roles!: UserRole;
 
   @Input()
   public forTemplates: boolean = false;

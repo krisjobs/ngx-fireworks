@@ -5,7 +5,7 @@ import { combineLatest, map } from 'rxjs';
 // ===================== MODELS =====================
 
 import { SectionConfig, UrlEntities } from 'src/app/styleguide';
-import { Entity, UserRoles } from 'functions/src/styleguide/models';
+import { Entity, UserRole } from 'functions/src/styleguide/models';
 
 // ===================== UTILITY =====================
 
@@ -31,7 +31,7 @@ export class GridComponent implements OnInit {
   public context!: UrlEntities;
 
   @Input()
-  public roles!: UserRoles;
+  public roles!: UserRole;
 
   public cardSettings$ = combineLatest([
     this.entityService.cardQuickAction$,
