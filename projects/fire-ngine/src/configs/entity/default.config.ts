@@ -426,7 +426,7 @@ export const defaultFilterFields: FormField[] = [
 
 export function getDefaultEntitySettings(customSettings?: Partial<EntitySettings>) {
   return {
-    displayTypes: ['grid', 'table'],
+    dataViewModes: ['grid', 'table'],
     selectedFormIdx: 0,
     toolbarChips: (entity: Entity) => [],
     showToolbarPinnedAction: () => true,

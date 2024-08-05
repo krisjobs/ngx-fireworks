@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import {
   documentId, DocumentReference, endBefore,
   limit, limitToLast, orderBy, QueryConstraint, startAfter,
-  Timestamp, where
+  EntityTimestamp, where
 } from '@angular/fire/firestore';
 import { forkJoin, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -28,7 +28,7 @@ import { AppService } from 'src/app/styleguide/services/app.service';
 // ===================== DEFINITIONS =====================
 
 @Injectable()
-export class EntityRepository {
+export class Repository {
 
   constructor(
     @Inject(SECTION_CONFIG) protected sectionConfig: SectionConfig,
@@ -52,7 +52,7 @@ export class EntityRepository {
     const sourcePath = `${parentPath}/${subcollectionPath}`;
     const targetPath = `${docRef.path}/${subcollectionPath}`;
 
-    const now = Timestamp.now();
+    const now = EntityTimestamp.now();
 
     return this.firestoreService.getDocs$(sourcePath).pipe(
       map((docs) => docs as Entity[]),
@@ -137,8 +137,8 @@ export class EntityRepository {
       ...newEntity,
       stats: {
         ...newEntity.stats,
-        updatedAt: new Timestamp(newEntity.stats?.createdAt?.seconds!, newEntity.stats?.createdAt?.nanoseconds!),
-        createdAt: new Timestamp(newEntity.stats?.createdAt?.seconds!, newEntity.stats?.createdAt?.nanoseconds!),
+        updatedAt: new EntityTimestamp(newEntity.stats?.createdAt?.seconds!, newEntity.stats?.createdAt?.nanoseconds!),
+        createdAt: new EntityTimestamp(newEntity.stats?.createdAt?.seconds!, newEntity.stats?.createdAt?.nanoseconds!),
         createdBy: this.authService.loggedUser.uid,
         updatedBy: this.authService.loggedUser.uid,
       }
@@ -261,7 +261,7 @@ export class EntityRepository {
       path: removePath,
     } = removedEntity;
 
-    const now = Timestamp.now();
+    const now = EntityTimestamp.now();
 
     if (!markedForDelete) {
       removeEntity$ = this.firestoreService.updateDoc$(

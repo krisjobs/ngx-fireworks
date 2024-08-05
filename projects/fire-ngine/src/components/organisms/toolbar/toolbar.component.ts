@@ -5,7 +5,7 @@ import { combineLatest, map, Observable, tap } from 'rxjs';
 // ===================== MODELS =====================
 
 import {
-  OverviewDisplayType, EntityFilter, SectionConfig,
+  DataViewMode, EntityFilter, SectionConfig,
   ChipConfig, ViewSettings, QuerySettings,
   UrlEntities
 } from 'src/app/styleguide';
@@ -18,14 +18,15 @@ import { getParamsFromUrl } from 'src/app/styleguide/utility';
 // ===================== SERVICES =====================
 
 import { EntityService } from '../../../services/entity.service';
-import { EntityAdapter } from '../../../services/entity.adapter';
+import { Controller } from '../../../services/entity.controller';
 import { SECTION_CONFIG } from 'src/app/styleguide/services/app.providers';
 import { AppService } from 'src/app/styleguide/services/app.service';
 
 // ===================== DEFINITIONS =====================
 
 @Component({
-  selector: 'lib-toolbar',
+  selector: 'fng-toolbar',
+  standalone: true,
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -51,7 +52,7 @@ export class ToolbarComponent implements OnInit {
 
   public pinnedActionSettings$ = combineLatest([
     this.entityService.toolbarPinnedAction$,
-    this.entityAdapter.actionStates$
+    this.controller.actionStates$
   ]);
 
   public isDefaultQuery$!: Observable<boolean>;
@@ -64,7 +65,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   public get overviewTypes() {
-    return this.entityService.entityConfig.entitySettings.displayTypes;
+    return this.entityService.entityConfig.entitySettings.dataViewModes;
   }
 
   public getViewActions(viewSettings: ViewSettings, url: string) {
@@ -136,7 +137,7 @@ export class ToolbarComponent implements OnInit {
   constructor(
     @Inject(SECTION_CONFIG) private sectionConfig: SectionConfig,
     private entityService: EntityService,
-    private entityAdapter: EntityAdapter,
+    private controller: Controller,
     private appService: AppService,
   ) { }
 
@@ -167,7 +168,7 @@ export class ToolbarComponent implements OnInit {
 
   public onSelectView(change: MatButtonToggleChange) {
     const viewUpdate = {
-      displayType: change.value as OverviewDisplayType,
+      displayType: change.value as DataViewMode,
     };
 
     if (!this.forTemplates) {

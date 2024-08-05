@@ -16,7 +16,8 @@ import { NotificationService } from 'src/app/styleguide/services/notification.se
 // ===================== DEFINITIONS =====================
 
 @Component({
-  selector: 'lib-dropzone',
+  selector: 'fng-dropzone',
+  standalone: true,
   templateUrl: './dropzone.component.html',
   styleUrls: ['./dropzone.component.scss']
 })
@@ -76,7 +77,7 @@ export class DropzoneComponent implements OnInit {
     this.appService.loadingOn()
 
     const saveFileName = `${Date.now()}_${this.file!.name}`;
-    // TODO CHECK HOW THIS IS DONE IN MEDIA ADAPTER
+    // TODO CHECK HOW THIS IS DONE IN MEDIA CONTROLLER
     const path = `${this.filePath}/${this.fileName ?? saveFileName}`;
 
     const [uploadTask, uploadTask$] = this.storageService.uploadFile$(

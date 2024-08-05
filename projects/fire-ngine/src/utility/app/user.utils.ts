@@ -1,16 +1,22 @@
+import { User as AuthUser } from '@angular/fire/auth';
+
+import { EntityTimestamp, User as UserEntity } from '../../common/models';
+import { now } from '../../common/utility';
+
+
 export const userBuilder = (
   authUser: AuthUser,
-  dbUser?: Partial<DbUser>,
+  userEntity?: Partial<UserEntity>,
   data?: any,
-): Partial<DbUser> => {
+): Partial<UserEntity> => {
   // logger.warn(JSON.stringify(data))
-  const now = Timestamp.now() as any;
+  const timestampNow: EntityTimestamp = now();
 
   const {
-    version = process.env.VERSION
+    version = 1 // process.env.VERSION
   } = data ?? {};
 
-  const attributes = dbUser?.attributes ?? {
+  const attributes = userEntity?.attributes ?? {
     isActive: false,
     category: null,
     isArchived: false,
@@ -25,27 +31,27 @@ export const userBuilder = (
     attributes,
     stats: {
       version,
-      ...dbUser?.stats,
-      createdBy: dbUser?.stats?.createdBy ?? null!,
-      createdAt: now,
-      updatedBy: dbUser?.stats?.updatedBy ?? null!,
-      updatedAt: now,
+      ...userEntity?.stats,
+      createdBy: userEntity?.stats?.createdBy ?? null!,
+      createdAt: timestampNow,
+      updatedBy: userEntity?.stats?.updatedBy ?? null!,
+      updatedAt: timestampNow,
       emailVerified: authUser.emailVerified,
     },
-    settings: dbUser?.settings ?? {},
+    settings: userEntity?.settings ?? {},
     information: {
-      ...dbUser?.information,
-      email: authUser.email ?? dbUser?.information?.email ?? null!,
-      name: authUser.displayName ?? dbUser?.information?.name ?? null!,
-      notes: dbUser?.information?.notes ?? null!,
+      ...userEntity?.information,
+      email: authUser.email ?? userEntity?.information?.email ?? null!,
+      name: authUser.displayName ?? userEntity?.information?.name ?? null!,
+      notes: userEntity?.information?.notes ?? null!,
     },
     data: {
-      ...dbUser?.data,
+      ...userEntity?.data,
       subscribers: [],
     },
     media: {
-      ...dbUser?.media,
-      defaultUrl: authUser.photoURL ?? dbUser?.media?.defaultUrl ?? null!
+      ...userEntity?.media,
+      defaultUrl: authUser.photoURL ?? userEntity?.media?.defaultUrl ?? null!
     },
   }
 }

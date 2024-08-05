@@ -1,5 +1,6 @@
 import { InjectionToken } from "@angular/core";
 
+
 export type Region = 'eu' | 'ae';
 
 export interface FirebaseConfig {

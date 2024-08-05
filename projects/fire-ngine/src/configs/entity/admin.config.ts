@@ -1,6 +1,4 @@
-import { ModuleConfig } from "src/app/styleguide";
-
-// ===================== MODULES =====================
+import { ModuleConfig } from "../../models";
 
 export const adminModuleConfig: ModuleConfig = {
   urlSegment: 'users',

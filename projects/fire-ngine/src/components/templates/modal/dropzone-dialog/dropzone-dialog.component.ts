@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 // ===================== MODELS =====================
 
-import { SectionConfig, CrudDialogData } from 'src/app/styleguide';
+import { SectionConfig, ModalData } from 'src/app/styleguide';
 import { EntityFile, FileType } from 'functions/src/styleguide/models';
 
 // ===================== UTILITY =====================

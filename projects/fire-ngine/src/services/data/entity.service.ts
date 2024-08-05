@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Timestamp, QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { PageEvent } from '@angular/material/paginator';
 import { BehaviorSubject, combineLatest, filter, from, map, NEVER, Observable, of, switchMap, tap } from 'rxjs';
 
@@ -11,9 +10,9 @@ import {
 } from 'functions/src/styleguide/models';
 
 import {
-  SortType, PaginatorSettings, SectionConfig, CrudDialogData,
+  SortType, PaginatorSettings, SectionConfig, ModalData,
   ViewSettings, QuerySettings, EntityAction, EntityConfig,
-  ConfigSheetData, SortSettings, UrlParams
+  PanelData, SortSettings, UrlParams
 } from 'src/app/styleguide';
 
 // ===================== UTILITY =====================
@@ -34,8 +33,8 @@ import { AuthService } from '../../firebase/services/auth.service';
 
 // ===================== COMPONENTS =====================
 
-import { ConfigSheetComponent } from '../components/organisms/config-sheet/config-sheet.component';
-import { CrudDialogComponent } from '../components/organisms/crud-dialog/crud-dialog.component';
+import { PanelComponent } from '../components/organisms/config-sheet/config-sheet.component';
+import { ModalComponent } from '../components/organisms/crud-dialog/crud-dialog.component';
 
 // ===================== DEFINITIONS =====================
 
@@ -77,7 +76,7 @@ export class EntityService {
 
 
   public generateRawEntity(parent?: Entity, sectionAsType = false): Partial<Entity> {
-    const now = Timestamp.now();
+    const now = EntityTimestamp.now();
 
     if (!this.authService.currentUser) {
       const message = 'You are not authorozied for this operation';
@@ -87,7 +86,7 @@ export class EntityService {
 
     // const reminderDate = new Date();
     // reminderDate.setFullYear(nowDate.getFullYear() + 1);
-    // const reminder = Timestamp.fromDate(reminderDate);
+    // const reminder = EntityTimestamp.fromDate(reminderDate);
 
     const targetPath = `${this.entityConfig.firestorePath}`;
     const targetId = this.repository.getNewDocId(targetPath);
@@ -125,7 +124,7 @@ export class EntityService {
     } as Partial<Entity>;
   }
 
-  public createNewEntityDialog(entity?: Partial<Entity>, customData?: Partial<CrudDialogData>) {
+  public createNewEntityDialog(entity?: Partial<Entity>, customData?: Partial<ModalData>) {
     const parentConfig = customData?.config;
     const newEntity = this.generateRawEntity(customData?.context?.query!, !!customData?.sectionAsType);
 
@@ -141,13 +140,13 @@ export class EntityService {
       title: `${!!entity ? 'Copy' : 'Create new'} ${!parentConfig ? this.entityConfig.displayName : parentConfig[0].tabs[parentConfig[1]].displayName}`,
       steps: !parentConfig ? this.entityConfig.formSteps : parentConfig[0].tabs[parentConfig[1]].formSteps,
       ...customData
-    } as CrudDialogData;
+    } as ModalData;
 
     this.openCrudDialog(dialogData);
   }
 
-  public editEntityDialog(entity: Entity, customData?: Partial<CrudDialogData>) {
-    const now = Timestamp.now();
+  public editEntityDialog(entity: Entity, customData?: Partial<ModalData>) {
+    const now = EntityTimestamp.now();
 
     const parentConfig = customData?.config;
 
@@ -165,13 +164,13 @@ export class EntityService {
       title: `Edit ${!parentConfig ? this.entityConfig.displayName : parentConfig[0].tabs[parentConfig[1]].displayName}`,
       steps: !parentConfig ? this.entityConfig.formSteps : parentConfig[0].tabs[parentConfig[1]].formSteps,
       ...customData,
-    } as CrudDialogData;
+    } as ModalData;
 
     this.openCrudDialog(dialogData);
   }
 
   public updateEntity(entity: Partial<Entity>) {
-    const now = Timestamp.now();
+    const now = EntityTimestamp.now();
 
     entity = {
       ...entity,
@@ -189,7 +188,7 @@ export class EntityService {
     subcollectionPath: string,
     propertyPath: string,
     counterPath: string) {
-    const now = Timestamp.now();
+    const now = EntityTimestamp.now();
 
     entity = {
       ...entity,
@@ -203,8 +202,8 @@ export class EntityService {
     return this.repository.resetCounter$(entity, subcollectionPath, propertyPath, counterPath);
   }
 
-  public removeEntityDialog(entity: Entity, customData?: Partial<CrudDialogData>) {
-    const now = Timestamp.now();
+  public removeEntityDialog(entity: Entity, customData?: Partial<ModalData>) {
+    const now = EntityTimestamp.now();
 
     const dialogData = {
       operation: 'delete',
@@ -219,7 +218,7 @@ export class EntityService {
       title: `Remove ${this.entityConfig.displayName}`,
       steps: this.entityConfig.formSteps,
       ...customData
-    } as CrudDialogData;
+    } as ModalData;
 
     this.openCrudDialog(dialogData);
   }
@@ -430,7 +429,7 @@ export class EntityService {
 
     const targetPath = `${parent.path}/${subcollectionPath}`;
 
-    const now = Timestamp.now();
+    const now = EntityTimestamp.now();
 
     return this.firestoreService.getDocs$(targetPath).pipe(
       map((docs) => docs as Entity[]),

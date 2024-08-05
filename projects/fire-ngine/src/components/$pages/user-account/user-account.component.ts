@@ -3,8 +3,10 @@ import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../../firebase/services/auth.service';
 
+
 @Component({
-  selector: 'bbo-user-account',
+  selector: 'fng-user-account',
+  standalone: true,
   templateUrl: './user-account.component.html',
   styleUrls: ['./user-account.component.scss']
 })

@@ -15,13 +15,14 @@ import { getParamsFromUrl } from 'src/app/styleguide/utility';
 import { SECTION_CONFIG } from 'src/app/styleguide/services/app.providers';
 import { AppService } from 'src/app/styleguide/services/app.service';
 import { ErrorService } from 'src/app/styleguide/services/error.service';
-import { EntityAdapter } from '../../../services/entity.adapter';
+import { Controller } from '../../../services/entity.controller';
 import { EntityService } from '../../../services/entity.service';
 
 // ===================== DEFINITIONS =====================
 
 @Component({
-  selector: 'lib-state-button',
+  selector: 'fng-state-button',
+  standalone: true,
   templateUrl: './state-button.component.html',
   styleUrls: ['./state-button.component.scss']
 })
@@ -123,7 +124,7 @@ export class StateButtonComponent implements OnInit {
   constructor(
     @Inject(SECTION_CONFIG) private sectionConfig: SectionConfig,
     private entityService: EntityService,
-    private entityAdapter: EntityAdapter,
+    private controller: Controller,
     private appService: AppService,
     private errorService: ErrorService,
   ) { }
@@ -152,7 +153,7 @@ export class StateButtonComponent implements OnInit {
       return;
     }
 
-    this.entityAdapter.invokeAction({
+    this.controller.invokeAction({
       action: this.action,
       url: getParamsFromUrl(url),
       entity: this.entity,

@@ -12,13 +12,14 @@ import { Entity, UserRole } from 'functions/src/styleguide/models';
 // ===================== SERVICES =====================
 
 import { SECTION_CONFIG } from 'src/app/styleguide/services/app.providers';
-import { EntityAdapter } from '../../../services/entity.adapter';
+import { Controller } from '../../../services/entity.controller';
 import { EntityService } from '../../../services/entity.service';
 
 // ===================== DEFINITIONS =====================
 
 @Component({
-  selector: 'lib-grid',
+  selector: 'fng-grid',
+  standalone: true,
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss']
 })
@@ -35,7 +36,7 @@ export class GridComponent implements OnInit {
 
   public cardSettings$ = combineLatest([
     this.entityService.cardQuickAction$,
-    this.entityAdapter.actionStates$
+    this.controller.actionStates$
   ]);
 
   /** Based on the screen size, switch from standard to one column per row */
@@ -66,7 +67,7 @@ export class GridComponent implements OnInit {
     @Inject(SECTION_CONFIG) private sectionConfig: SectionConfig,
     private breakpointObserver: BreakpointObserver,
     private entityService: EntityService,
-    private entityAdapter: EntityAdapter,
+    private controller: Controller,
   ) { }
 
   ngOnInit(): void {

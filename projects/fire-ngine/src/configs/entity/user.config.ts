@@ -375,7 +375,7 @@ export function getUserEntitySettings(
   customSettings?: Partial<EntitySettings>
 ): EntitySettings {
   return {
-    displayTypes: ['grid', 'table'],
+    dataViewModes: ['grid', 'table'],
     categories: [],
     selectedFormIdx: 0,
     toolbarChips: (entity) => [],

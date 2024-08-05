@@ -21,7 +21,8 @@ import { EntityService } from '../../../services/entity.service';
 // TODO refactor form fields to separate form components
 
 @Component({
-  selector: 'lib-form',
+  selector: 'fng-form',
+  standalone: true,
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
   providers: [

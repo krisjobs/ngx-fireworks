@@ -8,12 +8,10 @@ import { AsyncPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { and, or, collection, Firestore, query, where, getDocs, orderBy } from '@angular/fire/firestore';
 
-
 import { CoreService } from '../../../services/app/core.service';
 import { UserService } from '../../../services/data/user.service';
 import { LIB_CONFIG, LibConfig, ModuleConfig, ModuleConfigParams } from '../../../models';
 import { AuthService, FunctionsService } from '../../../services';
-
 
 
 @Component({

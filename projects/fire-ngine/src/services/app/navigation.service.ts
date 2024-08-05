@@ -11,7 +11,7 @@ import { APP_CONFIG } from './app.providers';
 @Injectable({
   providedIn: 'root'
 })
-export class AppService {
+export class NavigationService {
 
   public currentUrl$: Observable<string> = this.router.events.pipe(
     filter((event) => event instanceof NavigationEnd),

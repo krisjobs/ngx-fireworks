@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 
+
 @Component({
-  selector: 'app-block',
+  selector: 'fng-block',
   standalone: true,
   imports: [],
   templateUrl: './block.component.html',

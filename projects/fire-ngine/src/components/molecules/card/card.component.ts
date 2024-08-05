@@ -14,7 +14,8 @@ import { EntityService } from '../../../services/entity.service';
 // ===================== DEFINITIONS =====================
 
 @Component({
-  selector: 'lib-card',
+  selector: 'fng-card',
+  standalone: true,
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss']
 })

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 
+
 @Component({
-  selector: 'app-under-construction',
+  selector: 'fng-under-construction',
   standalone: true,
   imports: [],
   templateUrl: './under-construction.component.html',

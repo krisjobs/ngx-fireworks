@@ -6,8 +6,10 @@ import { UserService } from 'src/app/styleguide/modules/users/services/user.serv
 import { AuthFormChoices } from 'src/app/styleguide';
 import { AuthService } from '../../../firebase/services/auth.service';
 
+
 @Component({
-  selector: 'lib-user-landing',
+  selector: 'fng-user-landing',
+  standalone: true,
   templateUrl: './user-landing.component.html',
   styleUrls: ['./user-landing.component.scss']
 })

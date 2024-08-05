@@ -4,8 +4,10 @@ import { MODULE_CONFIG } from 'src/app/styleguide/services/app.providers';
 import { AppService } from 'src/app/styleguide/services/app.service';
 import { DashboardBox, ModuleConfig, BoxSegment } from 'src/app/styleguide';
 
+
 @Component({
-  selector: 'lib-box',
+  selector: 'fng-box',
+  standalone: true,
   templateUrl: './box.component.html',
   styleUrls: ['./box.component.scss']
 })

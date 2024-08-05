@@ -1,13 +1,14 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { UserHomeComponent } from './components/user-home/user-home.component';
+import { Routes } from '@angular/router';
+import {
+  redirectUnauthorizedTo, AuthGuard, redirectLoggedInTo
+} from '@angular/fire/auth-guard';
+
 import { UserLandingComponent } from '../../components/$pages/user-landing/user-landing.component';
 import { UserLoginComponent } from '../../components/$pages/user-landing/user-login/user-login.component';
 import { UserRegistrationComponent } from '../../components/$pages/user-landing/user-registration/user-registration.component';
 import { UserSettingsComponent } from '../../components/$pages/user-account/user-settings/user-settings.component';
-import { redirectUnauthorizedTo, AuthGuard, redirectLoggedInTo }
-  from '@angular/fire/auth-guard';
 import { UserAccountComponent } from '../../components/$pages/user-account/user-account.component';
+import { ModuleComponent } from '../../components/templates/module/module.component';
 
 // ==========================================
 
@@ -17,10 +18,11 @@ const redirectLoggedInToLanding = () => redirectLoggedInTo(['/']);
 
 // ==========================================
 
-const routes: Routes = [
+export const USER_ROUTES: Routes = [
   {
     path: '',
-    component: UserHomeComponent,
+    component: ModuleComponent,
+    redirectTo: 'account',
     children: [
       {
         path: 'login',
@@ -65,9 +67,3 @@ const routes: Routes = [
     ]
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class UserRoutingModule { }

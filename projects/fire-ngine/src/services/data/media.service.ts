@@ -21,7 +21,9 @@ import { Entity } from "functions/src/styleguide/models";
 
 // ===================== DEFINITIONS =====================
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class MediaService {
 
   constructor(

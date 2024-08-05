@@ -21,13 +21,14 @@ import { getParamsFromUrl } from 'src/app/styleguide/utility';
 
 import { SECTION_CONFIG } from 'src/app/styleguide/services/app.providers';
 import { AppService } from 'src/app/styleguide/services/app.service';
-import { EntityAdapter } from '../../../services/entity.adapter';
+import { Controller } from '../../../services/entity.controller';
 import { EntityService } from '../../../services/entity.service';
 
 // ===================== DEFINITIONS =====================
 
 @Component({
-  selector: 'lib-table',
+  selector: 'fng-table',
+  standalone: true,
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
   animations: [
@@ -67,7 +68,7 @@ export class TableComponent implements OnInit {
   ]);
 
   public numberCellSettings$ = combineLatest([
-    this.entityAdapter.actionStates$
+    this.controller.actionStates$
   ]);
 
   public getIncrementAction(column: TableColumn) {
@@ -127,7 +128,7 @@ export class TableComponent implements OnInit {
   constructor(
     @Inject(SECTION_CONFIG) private sectionConfig: SectionConfig,
     private entityService: EntityService,
-    private entityAdapter: EntityAdapter,
+    private controller: Controller,
     private appService: AppService,
   ) { }
 
@@ -140,7 +141,7 @@ export class TableComponent implements OnInit {
       this.appService.currentUrl$,
       this.viewSettings$,
       this.entityService.tableQuickAction$,
-      this.entityAdapter.actionStates$
+      this.controller.actionStates$
     ]).pipe(
       map(([
         currentUrl,
@@ -214,7 +215,7 @@ export class TableComponent implements OnInit {
     } = params;
 
     if (!this.forTemplates && !!orgAccess(this.roles)) {
-      this.entityAdapter.invokeAction(
+      this.controller.invokeAction(
         {
           entity,
           context: this.context,

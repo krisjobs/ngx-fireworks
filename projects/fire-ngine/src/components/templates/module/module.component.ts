@@ -3,7 +3,7 @@ import { MatSidenav, MatSidenavContent, MatSidenavContainer } from '@angular/mat
 import { map, Observable, tap } from 'rxjs';
 
 
-import { NavigationLink, DashboardLayout } from '../../../models/ui/framework.models';
+import { NavigationLink, DashboardLayout } from '../../../models/app/ui.models';
 import { getParamsFromUrl } from '../../../utility/app/entity.utils';
 import { CoreService } from '../../../services';
 import { MatNavList } from '@angular/material/list';

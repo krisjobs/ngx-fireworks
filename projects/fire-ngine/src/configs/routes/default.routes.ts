@@ -1,7 +1,10 @@
 import { Routes } from '@angular/router';
+import { AuthGuard, hasCustomClaim, } from '@angular/fire/auth-guard';
+
+import { UserRole } from '../../common/models';
 
 
-export const routes: Routes = [
+export const DEFAULT_ROUTES: Routes = [
   // {
   //   path: '',
   //   pathMatch: 'full',
@@ -15,13 +18,19 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadChildren: () => import('./$admin/admin.routes')
+    loadChildren: () => import('./admin.routes')
       .then(m => m.ADMIN_ROUTES),
+    canActivate: [
+      AuthGuard
+    ],
+    data: {
+      authGuardPipe: hasCustomClaim(UserRole.ADMIN)
+    }
   },
   {
     path: '**',
-    loadComponent: () => import('./core/components/page-not-found/page-not-found.component')
-      .then(m => m.PageNotFoundComponent),
+    loadComponent: () => import('../../components/$pages/not-found/not-found.component')
+      .then(m => m.NotFoundComponent),
   }
 ];
 

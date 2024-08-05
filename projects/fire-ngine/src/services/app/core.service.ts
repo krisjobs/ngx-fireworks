@@ -121,9 +121,9 @@ export class CoreService {
   }
 
 
-  public openCrudDialog(dialogData: CrudDialogData) {
+  public openCrudDialog(dialogData: ModalData) {
     const dialogRef = this.dialog.open(
-      CrudDialogComponent, {
+      ModalComponent, {
       data: dialogData
     });
 
@@ -207,9 +207,9 @@ export class CoreService {
       });
   }
 
-  public openConfigSheet(sheetData: ConfigSheetData) {
+  public openConfigSheet(sheetData: PanelData) {
     const sheetRef = this.sheet.open(
-      ConfigSheetComponent,
+      PanelComponent,
       {
         data: sheetData
       }

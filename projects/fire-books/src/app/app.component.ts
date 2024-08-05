@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LayoutComponent } from '../../../fire-ngine/src/components';
+
+import { LayoutComponent } from '../../../fire-ngine/src/components/$pages/layout/layout.component';
+
 
 @Component({
   selector: 'app-root',
