@@ -4,7 +4,7 @@ import { debounceTime, map, Subscription } from 'rxjs';
 
 // ===================== MODELS =====================
 
-import { FormField, EntityFilter, SelectOption, AutocompleteGroup, UrlEntities } from 'src/app/styleguide';
+import { FormField, QueryFilter, SelectOption, AutocompleteGroup, UrlEntities } from 'src/app/styleguide';
 import { UserRole } from 'functions/src/styleguide/models';
 
 // ===================== UTILITY =====================
@@ -44,14 +44,14 @@ export class FiltersMenuComponent implements OnInit {
   public fields: FormField[] = [];
 
   @Input('filters')
-  public set initFilters(filters: EntityFilter[]) {
+  public set initFilters(filters: QueryFilter[]) {
     this._filters = filters;
 
     if (filters === undefined) {
       return;
     }
 
-    const filtersMap = new Map<string, EntityFilter>();
+    const filtersMap = new Map<string, QueryFilter>();
 
     filters.forEach(
       (filter) => {
@@ -65,12 +65,12 @@ export class FiltersMenuComponent implements OnInit {
     this.initFormGroup();
     this.initOnChange();
   }
-  private _filters!: EntityFilter[];
-  private filters!: Map<string, EntityFilter>;
+  private _filters!: QueryFilter[];
+  private filters!: Map<string, QueryFilter>;
 
   // outputs must be defined in constructor, while inputs get available onInit
   @Output()
-  public onChange = new EventEmitter<EntityFilter[]>();
+  public onChange = new EventEmitter<QueryFilter[]>();
   private onChangeSub!: Subscription;
 
   public formGroup!: FormGroup;
@@ -149,7 +149,7 @@ export class FiltersMenuComponent implements OnInit {
         ))
       )
       .subscribe({
-        next: (filters: EntityFilter[]) => {
+        next: (filters: QueryFilter[]) => {
           filters.forEach(
             filter => {
               if (!filter.value && filter.value !== null) {

@@ -37,7 +37,7 @@
                   label="Sort">
         </lib-menu>
 
-        <lib-filters [fields]="getFilterFields()"
+        <lib-filters [fields]="getQueryFields()"
                      [filters]="(querySettings$ | async)?.filters!"
                      [context]="context"
                      data-cy="module.home.toolbar.buttonFiltersMenu"

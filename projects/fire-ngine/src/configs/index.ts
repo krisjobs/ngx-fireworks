@@ -3,7 +3,7 @@
 // export {
 //   defaultEntityActions,
 //   defaultEntityFilters,
-//   defaultFilterFields,
+//   defaultQueryFields,
 //   defaultFilters,
 //   defaultFormSteps,
 //   defaultGridCard,
@@ -20,7 +20,7 @@
 // export {
 //   userEntityActions,
 //   userEntityFilters,
-//   userFilterFields,
+//   userQueryFields,
 //   userFilters,
 //   userFormSteps,
 //   userGridCard,
@@ -36,7 +36,7 @@
 
 // export {
 //   fileEntityActions,
-//   fileFilterFields,
+//   fileQueryFields,
 //   fileFormSteps,
 //   fileGridCard,
 //   fileTableColumns,
@@ -45,7 +45,7 @@
 //   mediaTableColumns,
 
 //   linkEntityActions,
-//   linkFilterFields,
+//   linkQueryFields,
 //   linkFormSteps,
 //   linkTableColumns,
 

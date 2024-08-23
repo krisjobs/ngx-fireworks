@@ -3,8 +3,8 @@ import {
   getDefaultQuerySettings, getDefaultViewSettings
 } from "src/app/styleguide/modules/library/configs";
 import { selectFromArray } from "src/app/styleguide/utility";
-import { ConfigParams, EntityConfig, EntityFilter, RelatedConfigsMap, SectionConfig } from "src/app/styleguide";
-import { fileFilterFields, linkFilterFields, mediaEntityFilters } from "./common/media-filters.config";
+import { ConfigParams, EntityConfig, QueryFilter, RelatedConfigsMap, SectionConfig } from "src/app/styleguide";
+import { fileQueryFields, linkQueryFields, mediaEntityFilters } from "./common/media-filters.config";
 import { fileFormSteps, linkFormSteps } from "./common/media-forms.config";
 import { fileGridCard } from "./common/media-grids.config";
 import { fileTableColumns } from "./common/media-tables.config";
@@ -20,7 +20,7 @@ import {
 // ===================== ENTITIES =====================
 
 export const filesEntityConfig: EntityConfig = {
-  descriptor: 'file',
+  entityId: 'file',
   firestorePath: 'media',
   displayName: 'file',
   icon: 'upload_file',
@@ -44,9 +44,9 @@ export const filesEntityConfig: EntityConfig = {
     ], mediaEntityFilters, 'name')),
 
   formSteps: fileFormSteps,
-  filterFields: selectFromArray([
+  queryFields: selectFromArray([
     'type',
-  ], fileFilterFields, 'name'),
+  ], fileQueryFields, 'name'),
 
   gridCard: fileGridCard,
   tableColumns: selectFromArray([
@@ -78,7 +78,7 @@ export const filesEntityConfig: EntityConfig = {
     'remove-entity',
   ], fileEntityActions, 'id'),
   finalFilters: () => {
-    const finalFilters = {} as { [filterId: string]: EntityFilter };
+    const finalFilters = {} as { [filterId: string]: QueryFilter };
 
     finalFilters['isFile'] = {
       name: 'isFile',
@@ -91,7 +91,7 @@ export const filesEntityConfig: EntityConfig = {
 };
 
 export const linksEntityConfig: EntityConfig = {
-  descriptor: 'link',
+  entityId: 'link',
   firestorePath: 'media',
   displayName: 'link',
   icon: 'link',
@@ -115,9 +115,9 @@ export const linksEntityConfig: EntityConfig = {
     ], mediaEntityFilters, 'name')),
 
   formSteps: linkFormSteps,
-  filterFields: selectFromArray([
+  queryFields: selectFromArray([
     'type',
-  ], linkFilterFields, 'name'),
+  ], linkQueryFields, 'name'),
 
   gridCard: fileGridCard,
   tableColumns: selectFromArray([
@@ -143,7 +143,7 @@ export const linksEntityConfig: EntityConfig = {
     'remove-entity',
   ], linkEntityActions, 'id'),
   finalFilters: () => {
-    const finalFilters = {} as { [filterId: string]: EntityFilter };
+    const finalFilters = {} as { [filterId: string]: QueryFilter };
 
     finalFilters['isLink'] = {
       name: 'isLink',
@@ -293,12 +293,12 @@ export const linkEntityActions: EntityAction[] = [
 
 
 
-import { EntityFilter, FormField } from "src/app/styleguide";
-import { defaultEntityFilters, defaultFilterFields } from "../../../library/configs";
+import { QueryFilter, FormField } from "src/app/styleguide";
+import { defaultEntityFilters, defaultQueryFields } from "../../../library/configs";
 import { getEnumOptions } from "src/app/styleguide/utility";
 import { FileType, LinkType } from "functions/src/styleguide/models";
 
-export const mediaEntityFilters: EntityFilter[] = [
+export const mediaEntityFilters: QueryFilter[] = [
   ...defaultEntityFilters,
   // * type
   {
@@ -309,8 +309,8 @@ export const mediaEntityFilters: EntityFilter[] = [
   },
 ];
 
-export const fileFilterFields: FormField[] = [
-  ...defaultFilterFields,
+export const fileQueryFields: FormField[] = [
+  ...defaultQueryFields,
   // * type
   {
     name: 'type',
@@ -321,8 +321,8 @@ export const fileFilterFields: FormField[] = [
   },
 ];
 
-export const linkFilterFields: FormField[] = [
-  ...defaultFilterFields,
+export const linkQueryFields: FormField[] = [
+  ...defaultQueryFields,
   // * type
   {
     name: 'type',

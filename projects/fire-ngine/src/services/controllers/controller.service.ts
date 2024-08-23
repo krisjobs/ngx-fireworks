@@ -7,7 +7,7 @@ import { getSearchString } from "../../utility/app/entity.utils";
 import { getFileName } from "../../utility/app/media.utils";
 import { AppService } from "../app/app.service";
 import { EntityService } from "../data/entity.service";
-import { ConfigParams, EntityAction, EntityActionStates, InvokeActionParams, SECTION_CONFIG, SectionConfig } from "../../models";
+import { ConfigParams, EntityAction, ActionStates, InvokeActionParams, SECTION_CONFIG, SectionConfig } from "../../models";
 import { AuthService, FunctionsService, StorageService } from "fire-ngine";
 
 // ===================== MODELS =====================
@@ -15,8 +15,8 @@ import { AuthService, FunctionsService, StorageService } from "fire-ngine";
 @Injectable()
 export class Controller {
 
-  public actionStates$: Observable<EntityActionStates> = this.getActionStates$(false);
-  public templateActionStates$: Observable<EntityActionStates> = this.getActionStates$(true);
+  public actionStates$: Observable<ActionStates> = this.getActionStates$(false);
+  public templateActionStates$: Observable<ActionStates> = this.getActionStates$(true);
 
 
 

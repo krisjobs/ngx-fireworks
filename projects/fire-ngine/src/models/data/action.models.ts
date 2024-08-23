@@ -4,9 +4,9 @@ import { ConfigParams, ModalData, UrlEntities, UrlParams } from "..";
 
 export type IconType = "outlined" | "filled" | "round";
 
-export type EntityActionStateMap = Record<string, EntityActionState>;
+export type ActionStateMap = Record<string, ActionState>;
 
-export type EntityActionStates = Record<string, (params: Partial<ConfigParams>) => string>;
+export type ActionStates = Record<string, (params: Partial<ConfigParams>) => string>;
 
 export type EntityActionType = 'icon' | 'switch' | 'radio' | 'checkbox' | 'menu' | 'chip';
 
@@ -22,7 +22,7 @@ export interface InvokeActionParams<T extends Entity> {
   dialogSettings?: Partial<ModalData>;
 };
 
-export interface EntityActionState {
+export interface ActionState {
   value: (params: Partial<ConfigParams>) => string | boolean | number | null; // string -> icon
   label?: (params: Partial<ConfigParams>) => string;
   classes?: string[];
@@ -34,7 +34,7 @@ export interface EntityAction {
   id: string;
   type: (params: Partial<ConfigParams>) => EntityActionType;
 
-  states: EntityActionStateMap;
+  states: ActionStateMap;
   hidden?: (params: Partial<ConfigParams>) => boolean;
   color?: (params: Partial<ConfigParams>) => 'primary' | 'accent' | 'warn'; // for switch/checkbox/radio
   disabled?: (params: Partial<ConfigParams>) => boolean; // for switch/checkbox/radio

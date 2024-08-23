@@ -101,7 +101,7 @@ export class UserController extends Controller {
         // (user?: User, entity?: Entity) => entity?.attributes.relatedId === user?.id ? 'related' : 'not-related',
 
 
-      } as EntityActionStates)),
+      } as ActionStates)),
       switchMap(actions => super.getActionStates$(forTemplates).pipe(
         map(entityActions => ({
           ...actions,

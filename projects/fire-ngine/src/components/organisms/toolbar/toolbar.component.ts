@@ -5,7 +5,7 @@ import { combineLatest, map, Observable, tap } from 'rxjs';
 // ===================== MODELS =====================
 
 import {
-  DataViewMode, EntityFilter, SectionConfig,
+  DataViewMode, QueryFilter, SectionConfig,
   ChipConfig, ViewSettings, QuerySettings,
   UrlEntities
 } from 'src/app/styleguide';
@@ -98,13 +98,13 @@ export class ToolbarComponent implements OnInit {
     );
   }
 
-  public getFilterFields() {
-    const filterFields = !this.forTemplates || !this.sectionConfig.templates ?
-      this.entityService.entityConfig.filterFields :
-      this.sectionConfig.templates[this.entityService.activeFormIdx].filterFields;
+  public getQueryFields() {
+    const queryFields = !this.forTemplates || !this.sectionConfig.templates ?
+      this.entityService.entityConfig.queryFields :
+      this.sectionConfig.templates[this.entityService.activeFormIdx].queryFields;
 
-    // console.warn(this.forTemplates, filterFields, this.sectionConfig.templates, this.entityService.activeFormIdx)
-    return filterFields;
+    // console.warn(this.forTemplates, queryFields, this.sectionConfig.templates, this.entityService.activeFormIdx)
+    return queryFields;
   }
 
   public getCollectionActions(url: string) {
@@ -178,7 +178,7 @@ export class ToolbarComponent implements OnInit {
     }
   }
 
-  public applyFilters(filters: EntityFilter[]) {
+  public applyFilters(filters: QueryFilter[]) {
     if (!this.forTemplates) {
       this.entityService.querySettings = { filters };
     } else {

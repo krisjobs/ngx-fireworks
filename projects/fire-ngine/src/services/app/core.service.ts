@@ -37,59 +37,6 @@ export class CoreService {
 
 
 
-  private $activeTabIdx = new BehaviorSubject<number>(JSON.parse(
-    localStorage.getItem(
-      `${this.sectionConfig.sectionKey}.activeTabIdx`
-    ) || '0'
-  ));
-  private $activeFormIdx = new BehaviorSubject<number>(JSON.parse(
-    localStorage.getItem(
-      `${this.sectionConfig.sectionKey}.activeFormIdx`
-    ) || '0'
-  ));
-  public activeTabIdx$ = this.$activeTabIdx.asObservable();
-  public activeFormIdx$ = this.$activeFormIdx.asObservable();
-
-  public get activeTabIdx(): number {
-    return this.$activeTabIdx.value;
-  }
-
-  public get activeFormIdx(): number {
-    return this.$activeFormIdx.value;
-  }
-
-  public set activeTabIdx(value: number) {
-    this.$activeTabIdx.next(value);
-
-    this.querySettings = {
-      sectionFilters: this.sectionConfig.sectionFilters ?? [],
-      tabFilters: this.entityConfig.tabFilters ?? []
-    };
-
-    localStorage.setItem(
-      `${this.sectionConfig.sectionKey}.activeTabIdx`,
-      JSON.stringify(value)
-    );
-  }
-
-  public set activeFormIdx(value: number) {
-    if (value < (this.entityConfig.templateSettings ?? []).length) {
-      this.$activeFormIdx.next(value);
-    } else {
-      return;
-    }
-
-    // this.querySettings = {
-    //   sectionFilters: this.sectionConfig.sectionFilters ?? [],
-    //   tabFilters: this.entityConfig.tabFilters ?? []
-    // };
-
-    localStorage.setItem(
-      `${this.sectionConfig.sectionKey}.activeFormIdx`,
-      JSON.stringify(value)
-    );
-  }
-
 
 
 
@@ -190,13 +137,13 @@ export class CoreService {
 
           console.warn(entity)
 
-          const successMessage = `${dialogData.operation} ${this.entityConfig.descriptor} success.`;
+          const successMessage = `${dialogData.operation} ${this.entityConfig.entityId} success.`;
           console.log(successMessage);
           this.notificationService.message('Sucess.');
           // this.appService.loadingOff();
         },
         error: (error: Error) => {
-          const errorMessage = `${dialogData.operation} ${this.entityConfig.descriptor} error:\n=======\n\n${error.message}`;
+          const errorMessage = `${dialogData.operation} ${this.entityConfig.entityId} error:\n=======\n\n${error.message}`;
           console.error(errorMessage, dialogData);
           this.notificationService.error('Error!');
         },

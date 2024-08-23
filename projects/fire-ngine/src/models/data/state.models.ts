@@ -1,6 +1,4 @@
-import { QueryDocumentSnapshot } from "@angular/fire/firestore";
-
-import { ChipConfig, ConfigParams, EntityFilter, SelectOption } from "..";
+import { QueryFilter } from "..";
 
 
 export type DataViewMode = 'grid' | 'table';
@@ -9,14 +7,28 @@ export type SortDirection = 'desc' | 'asc';
 
 export type VisibilitySettings = Record<string, boolean>
 
-export interface PaginatorSettings {
+export interface PaginationSettings {
   querySize: number;
   pageSize: number;
   pageIndex: number;
   lastPageIndex: number | undefined;
   anchorHead: boolean | undefined;
-  queryHead?: QueryDocumentSnapshot;
-  queryTail?: QueryDocumentSnapshot;
+  // queryHead?: QueryDocumentSnapshot;
+  // queryTail?: QueryDocumentSnapshot;
+};
+
+export interface QuerySettings {
+  paginator: PaginationSettings;
+
+  /**
+    * used in entity repository to provide an alternative to stats.createdAt
+    */
+  defaultOrderByField?: string;
+
+  filters: QueryFilter[];
+  tabFilters: QueryFilter[];
+  sectionFilters: QueryFilter[];
+  viewFilters: Record<string, QueryFilter>;
 };
 
 export interface SortSettings {
@@ -28,34 +40,6 @@ export interface SortSettings {
   tableSortDirection: SortDirection;
 };
 
-// ===================== MAIN =====================
-
-export interface QuerySettings {
-  paginator: PaginatorSettings;
-
-  /**
-    * used in entity repository to provide an alternative to stats.createdAt
-    */
-  defaultOrderByField?: string;
-
-  filters: EntityFilter[];
-  tabFilters: EntityFilter[];
-  sectionFilters: EntityFilter[];
-  viewFilters: Record<string, EntityFilter>;
-};
-
-export interface EntitySettings {
-  dataViewModes: DataViewMode[];
-  selectedFormIdx: number;
-  categories?: SelectOption[]; // value -> icon
-
-  toolbarChips?: (params: Partial<ConfigParams>) => ChipConfig[];
-  showToolbarChips?: (params: Partial<ConfigParams>) => boolean;
-  showToolbarPinnedAction?: (params: Partial<ConfigParams>) => boolean;
-  showTableQuickAction?: (params: Partial<ConfigParams>) => boolean;
-  showCardQuickAction?: (params: Partial<ConfigParams>) => boolean;
-}
-
 export interface ViewSettings {
   displayType: DataViewMode;
 
@@ -64,8 +48,33 @@ export interface ViewSettings {
 
   sort: SortSettings;
 
-  selectedTemplateId?: string;
   tableQuickActionId: string;
   cardQuickActionId: string;
   toolbarPinnedActionId: string;
+
+  selectedTemplateId?: string;
+};
+
+export interface UserSettings {
+  /**
+   * used when signing up
+   */
+  email?: string;
+};
+
+export interface LocalStorageSettings {
+  /**
+   * user settings
+   */
+  user: UserSettings;
+
+  /**
+   * sectionId/entityId -> viewSettings
+   */
+  views: Record<string, ViewSettings>;
+
+  /**
+   * sectionId/entityId -> querySettings
+   */
+  queries: Record<string, QuerySettings>;
 };

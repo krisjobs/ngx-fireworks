@@ -10,7 +10,7 @@ import {
 } from 'functions/src/styleguide/models';
 
 import {
-  SortType, PaginatorSettings, SectionConfig, ModalData,
+  SortType, PaginationState, SectionConfig, ModalData,
   ViewSettings, QuerySettings, EntityAction, EntityConfig,
   PanelData, SortSettings, UrlParams
 } from 'src/app/styleguide';
@@ -107,8 +107,8 @@ export class EntityService {
         parentId: parent?.id ?? null,
 
         rating: StarRating.star_outline,
-        type: !sectionAsType ? this.entityConfig.descriptor : this.sectionConfig.sectionKey,
-        class: !sectionAsType ? null : this.entityConfig.descriptor,
+        type: !sectionAsType ? this.entityConfig.entityId : this.sectionConfig.sectionKey,
+        class: !sectionAsType ? null : this.entityConfig.entityId,
         category: null,
       },
       stats: {
@@ -404,7 +404,7 @@ export class EntityService {
         ...(anchorHead !== undefined && {
           anchorHead
         })
-      } as PaginatorSettings
+      } as PaginationState
     };
 
     if (!forTemplates) {

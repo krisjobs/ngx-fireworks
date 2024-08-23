@@ -7,7 +7,7 @@ import { combineLatest, map, switchMap } from "rxjs";
 
 import { User, FileType, LinkType, EntityFile, EntityLink } from "functions/src/styleguide/models";
 import {
-  InvokeActionParams, EntityActionStates, QuerySettings,
+  InvokeActionParams, ActionStates, QuerySettings,
   SectionConfig, ViewSettings
 } from "src/app/styleguide";
 
@@ -86,7 +86,7 @@ export class MediaController extends Controller {
           'bulk-add': () => 'default',
           'open-link': () => 'default',
 
-        } as EntityActionStates)),
+        } as ActionStates)),
         switchMap(actions => super.getActionStates$(forTemplates).pipe(
           map(entityActions => ({
             ...actions,
@@ -127,7 +127,7 @@ export class MediaController extends Controller {
             ...params.dialogSettings,
             url: params.url,
             onRequest: (media: MediaEntity) => {
-              const mediaType = this.entityService.entityConfig.descriptor;
+              const mediaType = this.entityService.entityConfig.entityId;
 
               let mediaClass: FileType | LinkType;
 
@@ -150,7 +150,7 @@ export class MediaController extends Controller {
                 ...media,
                 attributes: {
                   ...media.attributes,
-                  type: this.entityService.entityConfig.descriptor,
+                  type: this.entityService.entityConfig.entityId,
                   class: mediaClass
                 },
                 data: {

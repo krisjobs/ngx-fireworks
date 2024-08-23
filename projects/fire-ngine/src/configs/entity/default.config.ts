@@ -4,8 +4,8 @@ import { Validators } from "@angular/forms";
 
 import { StarRating, Entity } from "functions/src/styleguide/models";
 import {
-  EntityAction, EntityFilter,
-  EntitySettings, FormField, FormStep, GridCard, PaginatorSettings,
+  EntityAction, QueryFilter,
+  EntitySettings, FormField, FormStep, GridCard, PaginationState,
   QuerySettings, TableColumn, ViewSettings
 } from "src/app/styleguide";
 
@@ -403,7 +403,7 @@ export const defaultFilters = [
   'searchName',
 ];
 
-export const defaultEntityFilters: EntityFilter[] = [
+export const defaultEntityFilters: QueryFilter[] = [
   // * searchName
   {
     name: 'searchName',
@@ -413,7 +413,7 @@ export const defaultEntityFilters: EntityFilter[] = [
   },
 ];
 
-export const defaultFilterFields: FormField[] = [
+export const defaultQueryFields: FormField[] = [
   // * searchName
   {
     name: 'searchName',
@@ -436,8 +436,8 @@ export function getDefaultEntitySettings(customSettings?: Partial<EntitySettings
   } as EntitySettings;
 }
 
-export function getDefaultQuerySettings(filters: EntityFilter[] = [], paginator?: Partial<PaginatorSettings>): QuerySettings {
-  const defaultPaginatorSettings: PaginatorSettings = {
+export function getDefaultQuerySettings(filters: QueryFilter[] = [], paginator?: Partial<PaginationState>): QuerySettings {
+  const defaultPaginationState: PaginationState = {
     querySize: 11, // 2 * 5 + 1
     pageIndex: 0,
     lastPageIndex: 0,
@@ -446,7 +446,7 @@ export function getDefaultQuerySettings(filters: EntityFilter[] = [], paginator?
   };
 
   const finalPaginator = {
-    ...defaultPaginatorSettings,
+    ...defaultPaginationState,
     ...paginator,
   };
 

@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 
 // ===================== MODELS =====================
 
-import { EntityAction, EntityActionStates, UrlEntities } from 'src/app/styleguide';
+import { EntityAction, ActionStates, UrlEntities } from 'src/app/styleguide';
 import { Entity } from 'functions/src/styleguide/models';
 
 // ===================== SERVICES =====================
@@ -41,7 +41,7 @@ export class ActionsMenuComponent implements OnInit, OnDestroy {
   @Input()
   public forTemplates: boolean = false;
 
-  public actionStates!: EntityActionStates;
+  public actionStates!: ActionStates;
 
   private actionStatesSubscription!: Subscription;
 

@@ -56,8 +56,8 @@ export class EntityResolver {
 
     if (!!rootType && !!rootId) {
       if (!this.sectionConfig.related || !(rootType in this.sectionConfig.related)) {
-        // TODO think of a better way to display this message when descriptor is placeholder
-        const message = `LIB: add ${rootType} to ${this.entityService.entityConfig.descriptor}(${this.entityService.entityConfig.displayName}).sectionConfig.related`
+        // TODO think of a better way to display this message when entityId is placeholder
+        const message = `LIB: add ${rootType} to ${this.entityService.entityConfig.entityId}(${this.entityService.entityConfig.displayName}).sectionConfig.related`
         this.notificationService.error(message);
         throw new Error(message);
       }
@@ -82,7 +82,7 @@ export class EntityResolver {
 
     if (!!nestedType && !!nestedId) {
       if (!this.sectionConfig.related || !(nestedType in this.sectionConfig.related)) {
-        const message = `LIB: add ${nestedType} to ${this.entityService.entityConfig.descriptor} -> sectionConfig (${this.sectionConfig.sectionKey}) -> relatedConfigs`
+        const message = `LIB: add ${nestedType} to ${this.entityService.entityConfig.entityId} -> sectionConfig (${this.sectionConfig.sectionKey}) -> relatedConfigs`
         this.notificationService.error(message);
         throw new Error(message);
       }
@@ -107,7 +107,7 @@ export class EntityResolver {
 
     if (!!queryType && !!queryId) {
       if (!this.sectionConfig.related || !(queryType in this.sectionConfig.related)) {
-        const message = `LIB: add ${queryType} to ${this.entityService.entityConfig.descriptor} -> sectionConfig (${this.sectionConfig.sectionKey}) -> relatedConfigs`
+        const message = `LIB: add ${queryType} to ${this.entityService.entityConfig.entityId} -> sectionConfig (${this.sectionConfig.sectionKey}) -> relatedConfigs`
 
         this.notificationService.error(message);
         throw new Error(message);

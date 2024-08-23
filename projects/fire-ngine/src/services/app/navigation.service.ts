@@ -45,6 +45,10 @@ export class NavigationService {
     }),
   );
 
+  public navigateHome() {
+    this.router.navigate(['/']);
+  }
+
   public navigateTo({
     moduleName,
     rootType,

@@ -5,7 +5,6 @@ import {
   signInWithEmailAndPassword,
   UserCredential,
   User,
-  onAuthStateChanged,
   updateProfile,
   updateEmail,
   sendEmailVerification,
@@ -18,31 +17,72 @@ import {
   isSignInWithEmailLink,
   signInWithEmailLink,
   sendPasswordResetEmail,
+  ActionCodeSettings,
+  sendSignInLinkToEmail,
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { fromEventPattern, map, from, switchMap, tap, of } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
-import { Observable, fromEventPattern, map, from, switchMap, tap, of } from 'rxjs';
 import { UserCustomClaims, UserProfileUpdate } from '../../common/models';
-
-// ===================== MODELS =====================
-
-
-// ===================== UTILITY =====================
-
-
-// ===================== SERVICES =====================
-
-
-// ===================== DEFINITIONS =====================
+import { LoggerService, NavigationService, NotificationService } from '..';
 
 
 @Injectable()
 export class AuthService {
+  /**
+   * cache of the last logged user
+   * shows on logout
+   */
+  private lastLoggedUser: User | null = null;
 
+  /**
+   * a signal that emits current user
+   */
+  public $currentUser = toSignal(fromEventPattern(
+    observer => this.auth.onAuthStateChanged(observer)
+  ).pipe(
+    map((user) => {
+      const currentUser = user as User | null;
+      const context = 'AuthStateChanged';
+
+      if (currentUser) {
+        this.lastLoggedUser = currentUser;
+
+        this.logger.debug(`(${context}) User signed in.`, currentUser);
+      } else {
+        this.logger.debug(`(${context}) User signed out.`, this.lastLoggedUser);
+      }
+
+      return currentUser;
+    }),
+  ));
+
+  /**
+   * a signal that emits roles of current user
+   */
+  public $userRoles = toSignal(fromEventPattern(
+    observer => this.auth.onIdTokenChanged(observer)
+  ).pipe(
+    switchMap((user) => {
+      const currentUser = user as User | null;
+      return currentUser ? currentUser.getIdTokenResult() : of(null);
+    }),
+    map((token) => token ? token.claims as unknown as UserCustomClaims : null),
+    map((claims) => claims ? claims.roles : null)
+  ));
+
+  /**
+   * mirrors firebase auth state
+   */
   public get currentUser(): User | null {
     return this.auth.currentUser;
   }
 
+  /**
+   * only get user if logged in, otherwise throw error
+   * used as additional guard on places where user is expected to be logged in
+   */
   public get loggedUser(): User {
     if (!this.currentUser) {
       throw new Error('User is not logged');
@@ -51,62 +91,75 @@ export class AuthService {
     return this.currentUser;
   }
 
-  private idToken$$ = fromEventPattern(
-    observer => this.auth.onIdTokenChanged(observer)
-  ).pipe(
-    switchMap((user) => {
-      const currentUser = user as User | null;
-      return currentUser ? currentUser.getIdTokenResult() : of(null);
-    }),
-  );
-
-  public userRoles$$ = this.idToken$$.pipe(
-    map(token => {
-      const customClaims = token?.claims as unknown as UserCustomClaims | null;
-      return customClaims ? customClaims.roles : null;
-    }),
-  );
-
-  public currentUser$$: Observable<User | null> = fromEventPattern(
-    observer => onAuthStateChanged(this.auth, observer)
-  ).pipe(
-    map((user) => {
-      const currentUser = user as User | null;
-
-      if (currentUser) {
-        // const uid = currentUser.uid;
-        // ...
-      } else {
-        // User is signed out
-        // ...
-      }
-
-      return currentUser;
-    })
-  );
-
   constructor(
     private auth: Auth,
     private router: Router,
-  ) { }
+    private logger: LoggerService,
+    private notificationService: NotificationService,
+    private navigationService: NavigationService
+  ) {
+  }
 
-  public signOut(): void {
-    from(signOut(this.auth))
-      .pipe()
+  public signUp(email: string, pass: string) {
+    const context = 'signUp';
+
+    from(createUserWithEmailAndPassword(this.auth, email, pass))
+      .pipe(
+        map((userCredential: UserCredential) => userCredential.user),
+      )
       .subscribe({
+        next: (user) => {
+          this.notificationService.info('Welcome to H2Oasis!', {
+            user,
+            context
+          });
+
+          setTimeout(() => {
+            this.sendEmailVerification(user)
+          }, 4200);
+        },
         complete: () => {
-          console.warn('User logged out.');
-          // this.router.navigateByUrl('/user');
+          this.navigationService.navigateHome();
         },
         error: (error: Error) => {
-          console.error(error.message);
-
-          console.error(`Could not sign out.`);
+          this.notificationService.error('Could not sign up.', {
+            error,
+            context
+          });
         }
       });
   }
 
-  public signIn(email: string, pass: string): void {
+  public emailSignIn(email: string, link: string) {
+    const context = 'emailSignIn';
+
+    from(signInWithEmailLink(this.auth, email, link))
+      .subscribe({
+        next: (userCredential: UserCredential) => {
+          // "link" | "reauthenticate" | "signIn"
+          console.warn('WOW', userCredential.operationType);
+
+          console.warn(`Hello, ${userCredential.user.displayName || 'welcome back'}!`);
+
+        },
+        complete: () => {
+          this.navigationService.navigateHome();
+
+          // Clear email from storage.
+          window.localStorage.removeItem('user.auth.email');
+        },
+        error: (error: Error) => {
+          this.notificationService.error('Could not send sign in with email link.', {
+            error,
+            context
+          });
+        }
+      });
+  }
+
+  public passSignIn(email: string, pass: string): void {
+    const prefix = 'passSignIn';
+
     from(signInWithEmailAndPassword(this.auth, email, pass))
       .pipe(
         map((userCredential: UserCredential) => userCredential.user),
@@ -134,27 +187,6 @@ export class AuthService {
       });
   }
 
-  public signUp(email: string, pass: string) {
-    from(createUserWithEmailAndPassword(this.auth, email, pass))
-      .pipe(
-        map((userCredential: UserCredential) => userCredential.user),
-        tap((user) => this.sendEmailVerification(user))
-      )
-      .subscribe({
-        next: (user) => {
-          console.warn(`Welcome!`, user);
-        },
-        complete: () => {
-          this.router.navigate(['/']);
-        },
-        error: (error: Error) => {
-          console.error(error.message);
-
-          console.error(`Could not sign up.`);
-        }
-      });
-  }
-
   public googleSignIn() {
     const provider = new GoogleAuthProvider();
 
@@ -176,6 +208,20 @@ export class AuthService {
           console.error(error.message, [errorCode, email]);
 
           console.error(`Could not sign in with Google.`);
+        }
+      });
+  }
+
+  public signOut(): void {
+    from(signOut(this.auth))
+      .pipe()
+      .subscribe({
+        complete: () => {
+          this.notificationService.info('User sign out.', this.lastLoggedUser);
+          // this.router.navigateByUrl('/user');
+        },
+        error: (error: Error) => {
+          this.notificationService.error('Could not sign out.', error.message);
         }
       });
   }
@@ -206,82 +252,48 @@ export class AuthService {
       });
   }
 
-  // public signInAnonymously() {
-  //   from(signInAnonymously(this.auth))
-  //     .subscribe({
-  //       complete: () => {
-  //         console.warn(`Logged in as anonymous.`);
-  //       },
-  //       error: (error: Error) => {
-  //         console.error(error.message);
+  public sendSignInLinkToEmail(email: string) {
+    const settings: ActionCodeSettings = {
+      // URL you want to redirect back to. The domain (www.example.com) for this
+      // URL must be in the authorized domains list in the Firebase Console.
+      url: `${environment.user.emailSignIn}`,
+      // This must be true.
+      handleCodeInApp: true,
 
-  //         console.error(`Could not login as anonymous.`);
-  //       }
-  //     });
-  // }
+      // iOS: {
+      //   bundleId: 'com.example.ios'
+      // },
+      // android: {
+      //   packageName: 'com.example.android',
+      //   installApp: true,
+      //   minimumVersion: '12'
+      // },
+      // dynamicLinkDomain: 'example.page.link'
+    };
 
-  // public sendSignInLinkToEmail(email: string) {
-  //   const settings: ActionCodeSettings = {
-  //     // URL you want to redirect back to. The domain (www.example.com) for this
-  //     // URL must be in the authorized domains list in the Firebase Console.
-  //     url: `${environment.user.emailSignIn}`,
-  //     // This must be true.
-  //     handleCodeInApp: true,
+    from(sendSignInLinkToEmail(this.auth, email, settings))
+      .subscribe({
+        complete: () => {
+          // The link was successfully sent. Inform the user.
+          console.warn(`Login link email sent.`);
 
-  //     // iOS: {
-  //     //   bundleId: 'com.example.ios'
-  //     // },
-  //     // android: {
-  //     //   packageName: 'com.example.android',
-  //     //   installApp: true,
-  //     //   minimumVersion: '12'
-  //     // },
-  //     // dynamicLinkDomain: 'example.page.link'
-  //   };
+          // Save the email locally so you don't need to ask the user for it again
+          // if they open the link on the same device.
+          window.localStorage.setItem('user.auth.email', email);
+        },
+        error: (error: Error) => {
+          console.error(error.message, [email, settings]);
 
-  //   from(sendSignInLinkToEmail(this.auth, email, settings))
-  //     .subscribe({
-  //       complete: () => {
-  //         // The link was successfully sent. Inform the user.
-  //         console.warn(`Login link email sent.`);
-
-  //         // Save the email locally so you don't need to ask the user for it again
-  //         // if they open the link on the same device.
-  //         window.localStorage.setItem('user.auth.email', email);
-  //       },
-  //       error: (error: Error) => {
-  //         console.error(error.message, [email, settings]);
-
-  //         console.error(`Could not send login email link.`);
-  //       }
-  //     });
-  // }
+          console.error(`Could not send login email link.`);
+        }
+      });
+  }
 
   public isSignInWithEmailLink(link: string) {
     return isSignInWithEmailLink(this.auth, link);
   }
 
-  public signInWithEmailLink(email: string, link: string) {
-    from(signInWithEmailLink(this.auth, email, link))
-      .subscribe({
-        next: (userCredential: UserCredential) => {
-          // "link" | "reauthenticate" | "signIn"
-          console.warn('WOW', userCredential.operationType);
 
-          console.warn(`Hello, ${userCredential.user.displayName || 'welcome back'}!`);
-        },
-        complete: () => {
-          this.router.navigate(['/']);
-
-          // Clear email from storage.
-          window.localStorage.removeItem('user.auth.email');
-        },
-        error: (error: Error) => {
-          console.error(error.message, [email, link]);
-          console.error(`Could not send sign in with email link.`);
-        }
-      });
-  }
 
   public updateProfile(
     update: Partial<UserProfileUpdate>

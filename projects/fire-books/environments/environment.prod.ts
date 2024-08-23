@@ -6,6 +6,7 @@ export const environment: EnvConfig = {
   appRegion: 'eu',
   dbRegion: 'eur3',
   beRegion: 'europe-west3',
+  sessionPersistence: 'LOCAL',
   firebase: {
     projectId: "fire-b00ks",
     appId: "1:744692719903:web:7ece87bdc3f898e84d102a",

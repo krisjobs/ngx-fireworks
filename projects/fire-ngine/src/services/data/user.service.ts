@@ -42,7 +42,7 @@ export class UserService {
   }
 
   public logIn(email: string, pass: string): void {
-    this.authService.signIn(email, pass);
+    this.authService.passSignIn(email, pass);
   }
 
   public logOut(): void {

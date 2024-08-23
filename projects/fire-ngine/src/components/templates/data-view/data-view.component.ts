@@ -106,7 +106,7 @@ export class DataViewComponent implements OnInit {
 
     this.queryEntities$$ = this.route.data.pipe(
       switchMap(({
-        [this.entityService.entityConfig.descriptor]: entitiesObs,
+        [this.entityService.entityConfig.entityId]: entitiesObs,
       }) => (entitiesObs as Observable<Entity[]>)),
       tap((entities) => {
         console.warn('===overview===', entities)

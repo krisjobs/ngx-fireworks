@@ -2,10 +2,10 @@
 
 // export { AppService } from './app/app.service';
 // export { CoreService } from './app/core.service';
-// export { NavigationService } from './app/navigation.service';
+export { NavigationService } from './app/navigation.service';
 // export { SettingsService } from './app/settings.service';
 export { TransactionService } from './app/transaction.service';
-// export { NotificationService } from './app/notification.service';
+export { NotificationService } from './app/notification.service';
 export { LoggerService } from './app/logger.service';
 
 // ===================== DATA =====================

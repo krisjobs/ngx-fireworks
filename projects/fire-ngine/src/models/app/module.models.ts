@@ -1,7 +1,5 @@
-import { InjectionToken } from '@angular/core';
-
 import { UserRole } from '../../common/models';
-import { DashboardLayout, EmulatorPorts } from '..';
+import { IconConfig, IconStyle, SectionConfig } from '..';
 
 
 export interface ModuleConfigParams {
@@ -9,11 +7,6 @@ export interface ModuleConfigParams {
 }
 
 export interface ModuleConfig {
-  /**
-   * relative url path from root
-   */
-  routerLink: string[];
-
   /**
    * unique url path segment
    */
@@ -23,6 +16,16 @@ export interface ModuleConfig {
    * display name in navmenu and header
    */
   displayName: string;
+
+  /**
+   * icon associated with module, used in navmenu and navbar
+   */
+  icon?: IconConfig;
+
+  /**
+   * disable nav link
+   */
+  disabled?: boolean;
 
   /**
    * module nav link hidden from header
@@ -35,20 +38,12 @@ export interface ModuleConfig {
   hiddenFromSidenav?: (params: Partial<ModuleConfigParams>) => boolean;
 
   /**
-   * layout for dashboard view
+   * show sidenav with links
    */
-  homeLayout?: DashboardLayout;
+  showSidenav?: boolean;
 
   /**
-   * show home nav link in sidenav
+   * section ids in a particular order
    */
-  showNavLinksHome?: boolean;
+  sectionIds: string[];
 }
-
-export interface LibConfig {
-  ports: EmulatorPorts;
-  version: string;
-  modules: ModuleConfig[];
-}
-
-export const LIB_CONFIG = new InjectionToken<LibConfig>('LibConfig');

@@ -1,5 +1,8 @@
-import { Injectable } from '@angular/core';
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { Inject, Injectable } from '@angular/core';
+import { MatSnackBar, MatSnackBarConfig } from "@angular/material/snack-bar";
+
+import { APP_CONFIG, AppConfig } from '../../models';
+import { LoggerService } from './logger.service';
 
 // ===================== DEFINITIONS =====================
 
@@ -8,47 +11,52 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 })
 export class NotificationService {
 
+  private get duration(): number {
+    return this.appConfig.snackbarDuration;
+  }
+
   constructor(
+    @Inject(APP_CONFIG) private appConfig: AppConfig,
+    private logger: LoggerService,
     private snackBar: MatSnackBar
   ) { }
 
-  public message(
+  public info(
     message: string,
-    action: string = 'OK'
+    context: any = {},
   ) {
-    let config: any = {
-
-      duration: 10000,
-      panelClass: ['message-snackbar']
+    const action = 'OK';
+    const config: MatSnackBarConfig = {
+      duration: this.duration,
     };
+
     this.snackBar.open(message, action, config);
+    this.logger.log(message, context);
+  }
+
+  public warn(
+    message: string,
+    context: any = {},
+  ) {
+    const action = 'Close';
+    const config: MatSnackBarConfig = {
+      duration: this.duration,
+    };
+
+    this.snackBar.open(message, action, config);
+    this.logger.warn(message, context);
   }
 
   public error(
     message: string,
-    action: string = 'Close'
+    context: any = {},
   ) {
-    let config: any = {
-
-      panelClass: ['error-snackbar']
+    const action = 'Dismiss';
+    const config: MatSnackBarConfig = {
+      duration: this.duration,
     };
+
     this.snackBar.open(message, action, config);
-  }
-
-  public throwErrorIfNotExist<T>(message: string, object?: T | null, context?: any): T {
-    if (!object) {
-      console.error(message, context);
-      // this.notificationService.error(message);
-      // this.router.navigateByUrl('/');
-      throw new Error(message);
-    }
-
-    return object;
-  }
-
-  public throwError(message: string, context?: any): never {
-    this.error(message);
-    console.error(message, context);
-    throw new Error(message);
+    this.logger.error(message, context);
   }
 }

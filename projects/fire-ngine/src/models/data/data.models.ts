@@ -2,7 +2,7 @@ import { User } from "@angular/fire/auth";
 import { Observable } from "rxjs";
 
 import { Entity, EntityAttributes } from "../../common/models";
-import { ConfigParams, EntityFilter, FormStep, ListItem, SectionConfig, UrlEntities, UrlParams } from "..";
+import { ConfigParams, QueryFilter, FormStep, ListItem, SectionConfig } from "..";
 
 
 export type CrudOperation = 'create' | 'update' | 'delete';
@@ -17,7 +17,7 @@ export interface TemplatesConfigData {
   preselectStrategy?: (user: User, templates: Entity[], related?: any, entities?: any) => (Entity | undefined)[];
   entityAssembly?: (entities: any, initial: any, current: any) => Entity;
   entitiesCancel?: (oldEntities: any, newEntities: any) => (Entity | null)[];
-  viewFilters?: <T extends Entity>(params: Partial<ConfigParams<T>>) => Record<string, EntityFilter>[];
+  viewFilters?: <T extends Entity>(params: Partial<ConfigParams<T>>) => Record<string, QueryFilter>[];
 }
 
 // ===================== MAIN =====================
@@ -47,7 +47,7 @@ export interface ModalData {
   /**
    * changes generateRawEntity to set
    * attributes.type to sectionConfig.key and
-   * attributes.class to entityConfig.descriptor
+   * attributes.class to entityConfig.entityId
    */
   sectionAsType?: boolean;
 

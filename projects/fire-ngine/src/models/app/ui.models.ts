@@ -1,12 +1,33 @@
 import { AbstractControl, ValidationErrors } from "@angular/forms";
 
-import { ConfigParams } from "..";
+import { Entity } from "../../common/models";
 
 
-export interface TabProperties {
+export interface ConfigParams<T extends Entity = Entity> {
+  data: any; // custom data for some operations
+  flag: boolean;
+  context: UrlEntities;
+  url: UrlParams;
+  entityConfig: EntityConfig;
+  sectionConfig: SectionConfig;
+  viewSettings: ViewSettings;
+  querySettings: QuerySettings;
+  entity: T;
+  entities: any; // used to be (T | null | undefined)[], but the elements are of different type
+  roles: UserRole;
+}
+
+
+export type IconStyle = 'filled' | 'outlined';
+
+export interface IconConfig {
+  name: string;
+  style?: IconStyle;
+}
+
+export interface TabProps {
   label: string;
   icon?: string;
-  svgIcon?: boolean;
 
   disabled?: (params: Partial<ConfigParams>) => boolean;
 

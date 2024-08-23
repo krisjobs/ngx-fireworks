@@ -17,6 +17,7 @@ export interface EnvConfig {
   production: boolean;
   useEmulators: boolean;
   appRegion: Region;
+  sessionPersistence: 'SESSION' | 'LOCAL' | 'NONE';
   dbRegion: string; // Firestore + Storage
   beRegion: string; // Functions
   firebase: FirebaseConfig;

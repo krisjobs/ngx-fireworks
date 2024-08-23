@@ -47,6 +47,8 @@ import { FirebaseService } from '../services/firebase/firebase.service';
         connectAuthEmulator(auth, `http://localhost:${libConfig.ports.auth}`);
       }
 
+      auth.setPersistence({ type: envConfig.sessionPersistence });
+
       return auth;
     }),
     provideFirestore((injector: Injector) => {

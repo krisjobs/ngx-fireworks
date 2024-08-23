@@ -6,8 +6,8 @@ import { UserTypes } from "src/app/core/models";
 import { Entity, User } from "functions/src/styleguide/models";
 import {
   FormStep, TableColumn, GridCard, EntityAction,
-  EntityFilter, FormField, EntitySettings,
-  PaginatorSettings, QuerySettings, ViewSettings
+  QueryFilter, FormField, EntitySettings,
+  PaginationState, QuerySettings, ViewSettings
 } from "src/app/styleguide";
 // ===================== UTILITY =====================
 
@@ -331,7 +331,7 @@ export const userFilters = [
   'userType'
 ];
 
-export const userEntityFilters: EntityFilter[] = [
+export const userEntityFilters: QueryFilter[] = [
   // * userType
   {
     name: 'userType',
@@ -348,7 +348,7 @@ export const userEntityFilters: EntityFilter[] = [
   },
 ];
 
-export const userFilterFields: FormField[] = [
+export const userQueryFields: FormField[] = [
   // * userType
   {
     name: 'userType',
@@ -410,11 +410,11 @@ export function getUserViewSettings(
 };
 
 export function getUserQuerySettings(
-  entityFilters: EntityFilter[] = [],
-  paginator?: Partial<PaginatorSettings>,
-  ...defaultFilters: EntityFilter[]
+  entityFilters: QueryFilter[] = [],
+  paginator?: Partial<PaginationState>,
+  ...defaultFilters: QueryFilter[]
 ): QuerySettings {
-  const defaultPaginatorSettings: PaginatorSettings = {
+  const defaultPaginationState: PaginationState = {
     querySize: 11, // 2 * 5 + 1
     pageIndex: 0,
     lastPageIndex: 0,
@@ -430,12 +430,12 @@ export function getUserQuerySettings(
         [filter.name]: filter
       }
     },
-    {} as { [filterId: string]: EntityFilter; }
+    {} as { [filterId: string]: QueryFilter; }
   );
 
   return {
     paginator: {
-      ...defaultPaginatorSettings,
+      ...defaultPaginationState,
       ...paginator
     },
 
@@ -459,7 +459,7 @@ export function getUserQuerySettings(
 import {
   getUserEntitySettings, getUserViewSettings, getUserQuerySettings,
   userEntityActions, userTableColumns, userGridCard, userFormSteps,
-  userFilterFields, userEntityFilters,
+  userQueryFields, userEntityFilters,
   userFilters
 } from "..";
 import { SectionConfig, EntityConfig } from "src/app/styleguide";
@@ -468,7 +468,7 @@ import { selectFromArray } from "../../../utility";
 // ===================== ENTITIES =====================
 
 export const usersEntityConfig: EntityConfig = {
-  descriptor: 'user',
+  entityId: 'user',
   firestorePath: 'users',
   displayName: 'user',
   icon: 'person',
@@ -489,7 +489,7 @@ export const usersEntityConfig: EntityConfig = {
   ),
 
   formSteps: userFormSteps,
-  filterFields: selectFromArray(userFilters, userFilterFields, 'name'),
+  queryFields: selectFromArray(userFilters, userQueryFields, 'name'),
 
   gridCard: userGridCard,
   tableColumns: selectFromArray([
@@ -537,7 +537,7 @@ export const usersSectionConfig: SectionConfig = {
 import {
   getUserEntitySettings, getUserViewSettings, getUserQuerySettings,
   userEntityActions, userTableColumns, userGridCard, userFormSteps,
-  userFilterFields, userEntityFilters,
+  userQueryFields, userEntityFilters,
   userFilters
 } from "..";
 import { SectionConfig, EntityConfig } from "src/app/styleguide";
@@ -546,7 +546,7 @@ import { selectFromArray } from "../../../utility";
 // ===================== ENTITIES =====================
 
 const connectionsEntityConfig: EntityConfig = {
-  descriptor: 'connection',
+  entityId: 'connection',
   firestorePath: 'users',
   displayName: 'user',
   icon: 'person',
@@ -563,7 +563,7 @@ const connectionsEntityConfig: EntityConfig = {
   querySettings: getUserQuerySettings(selectFromArray(userFilters, userEntityFilters, 'name')),
 
   formSteps: userFormSteps,
-  filterFields: selectFromArray(userFilters, userFilterFields, 'name'),
+  queryFields: selectFromArray(userFilters, userQueryFields, 'name'),
 
   gridCard: userGridCard,
   tableColumns: selectFromArray([
