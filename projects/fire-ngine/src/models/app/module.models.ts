@@ -1,9 +1,8 @@
-import { UserRole } from '../../common/models';
-import { IconConfig, IconStyle, SectionConfig } from '..';
+import { ConfigParams, IconConfig } from '..';
 
 
-export interface ModuleConfigParams {
-  userRoles: UserRole[];
+export interface ModuleConfigParams extends ConfigParams {
+  test: string;
 }
 
 export interface ModuleConfig {

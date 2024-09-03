@@ -1,24 +1,11 @@
 import { AbstractControl, ValidationErrors } from "@angular/forms";
 
+import { ConfigParams, EntityConfigParams } from "..";
 import { Entity } from "../../common/models";
 
 
-export interface ConfigParams<T extends Entity = Entity> {
-  data: any; // custom data for some operations
-  flag: boolean;
-  context: UrlEntities;
-  url: UrlParams;
-  entityConfig: EntityConfig;
-  sectionConfig: SectionConfig;
-  viewSettings: ViewSettings;
-  querySettings: QuerySettings;
-  entity: T;
-  entities: any; // used to be (T | null | undefined)[], but the elements are of different type
-  roles: UserRole;
-}
-
-
 export type IconStyle = 'filled' | 'outlined';
+export type Color = 'primary' | 'accent' | 'warn';
 
 export interface IconConfig {
   name: string;
@@ -27,19 +14,29 @@ export interface IconConfig {
 
 export interface TabProps {
   label: string;
-  icon?: string;
-
   disabled?: (params: Partial<ConfigParams>) => boolean;
 
+  icon?: string;
   iconPosition?: 'before' | 'after';
 };
+
+export interface StepProps {
+  label: string;
+  sublabel: (entity: Entity) => string;
+
+  color?: Color;
+  icon?: string;
+
+  preselectStrategy?: (params: Partial<EntityConfigParams>) => Entity;
+  deselectStrategy?: (params: Partial<EntityConfigParams>) => boolean;
+}
 
 export interface ChipConfig {
   text?: string;
 
   icon?: string;
   selected?: boolean;
-  color?: string; // primary | accent | warn | undefined
+  color?: Color;
 };
 
 export interface SelectOption {

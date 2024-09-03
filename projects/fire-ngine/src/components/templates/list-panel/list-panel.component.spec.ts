@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DropzoneDialogComponent } from './dropzone-dialog.component';
+import { PanelComponent } from './list-panel.component';
 
-describe('DropzoneDialogComponent', () => {
-  let component: DropzoneDialogComponent;
-  let fixture: ComponentFixture<DropzoneDialogComponent>;
+describe('PanelComponent', () => {
+  let component: PanelComponent;
+  let fixture: ComponentFixture<PanelComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DropzoneDialogComponent]
+      declarations: [PanelComponent]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DropzoneDialogComponent);
+    fixture = TestBed.createComponent(PanelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

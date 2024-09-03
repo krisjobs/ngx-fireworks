@@ -1,10 +1,31 @@
 import { InjectionToken } from "@angular/core";
+import { ParamMap } from "@angular/router";
 
-import { EmulatorPorts, EntityConfig, ModuleConfig, SectionConfig } from "..";
+import {
+  ContextMap, EmulatorPorts, EntityConfig,
+  ModuleConfig, SectionConfig
+} from "..";
 
 
-export interface AppConfigParams {
+// export interface ConfigParams<T extends Entity = Entity> {
+//   data: any; // custom data for some operations
+//   flag: boolean;
+//   context: UrlEntities;
+//   url: UrlParams;
+//   entityConfig: EntityConfig;
+//   sectionConfig: SectionConfig;
+//   viewSettings: ViewSettings;
+//   querySettings: QuerySettings;
+//   entity: T;
+//   entities: any; // used to be (T | null | undefined)[], but the elements are of different type
+//   roles: UserRole;
+// }
+
+export interface ConfigParams {
   userRoles: string[];
+  paramMap: ParamMap;
+  queryParamMap: ParamMap;
+  contextMap: ContextMap;
 }
 
 export interface AppConfig {

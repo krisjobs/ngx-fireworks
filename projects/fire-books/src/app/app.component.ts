@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-import { LayoutComponent } from '../../../fire-ngine/src/components/$pages/layout/layout.component';
+// import { LayoutComponent } from '../../../fire-ngine/src/components/$pages/layout/layout.component';
 
 
 @Component({
@@ -9,7 +9,7 @@ import { LayoutComponent } from '../../../fire-ngine/src/components/$pages/layou
   standalone: true,
   imports: [
     RouterOutlet,
-    LayoutComponent
+    // LayoutComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

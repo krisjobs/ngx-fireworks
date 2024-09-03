@@ -1,7 +1,7 @@
 // ===================== APP =====================
 
 // export { AppService } from './app/app.service';
-// export { CoreService } from './app/core.service';
+export { CoreService } from './app/core.service';
 export { NavigationService } from './app/navigation.service';
 // export { SettingsService } from './app/settings.service';
 export { TransactionService } from './app/transaction.service';

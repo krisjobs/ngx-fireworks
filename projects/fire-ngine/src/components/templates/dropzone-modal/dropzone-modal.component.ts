@@ -22,11 +22,11 @@ import { getFileType } from 'src/app/styleguide/utility/media.util';
 
 
 @Component({
-  selector: 'lib-dropzone-dialog',
-  templateUrl: './dropzone-dialog.component.html',
-  styleUrls: ['./dropzone-dialog.component.scss'],
+  selector: 'fng-dropzone-modal',
+  templateUrl: './dropzone-modal.component.html',
+  styleUrls: ['./dropzone-modal.component.scss'],
 })
-export class DropzoneDialogComponent implements OnInit {
+export class DropzoneModalComponent implements OnInit {
 
   private downloadLinks: string[] = [];
 
@@ -51,7 +51,7 @@ export class DropzoneDialogComponent implements OnInit {
     private firestoreService: FirestoreService,
     private fileService: FileService,
     private authService: AuthService,
-    private dialogRef: MatDialogRef<DropzoneDialogComponent>,
+    private dialogRef: MatDialogRef<DropzoneModalComponent>,
   ) {
 
   }

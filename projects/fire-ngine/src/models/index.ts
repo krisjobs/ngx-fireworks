@@ -2,7 +2,7 @@
 
 export {
   AppConfig,
-  AppConfigParams,
+  ConfigParams,
   APP_CONFIG,
 } from './app/app.models';
 
@@ -21,7 +21,6 @@ export {
 export {
   SectionConfig,
   SectionConfigParams,
-  SECTION_CONFIG,
 } from './app/section.models';
 
 export {
@@ -31,7 +30,14 @@ export {
   EntityFormConfig,
   EntityToolbarConfig,
   EntityActionsConfig,
+  EntityOperation,
 } from './app/entity.models';
+
+
+export {
+  LogLevel,
+  ContextMap,
+} from './app/service.models';
 
 export {
   AutocompleteGroup,
@@ -47,8 +53,9 @@ export {
   TabProps,
   TableColumn,
   IconStyle,
-  ConfigParams,
   IconConfig,
+  Color,
+  StepProps,
 } from './app/ui.models';
 
 // ===================== DATA =====================
@@ -64,7 +71,7 @@ export {
   VisibilitySettings,
   LocalStorageSettings,
   SortSettings,
-} from './data/state.models';
+} from './data/settings.models';
 
 export {
   ActionStateMap,
@@ -77,11 +84,11 @@ export {
 } from './data/action.models';
 
 export {
-  CrudOperation,
-  ModalData,
-  PanelData,
-  TemplatesConfigData,
-} from './data/data.models';
+  ActionPanelData,
+  ListPanelData,
+  RemoveModalData,
+  SaveModalData,
+} from './data/modal.models';
 
 export {
   QueryFilter,

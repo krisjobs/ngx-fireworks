@@ -2,27 +2,25 @@ import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } fr
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
 
-import { ENV_CONFIG, LIB_CONFIG } from '../../../fire-ngine/src/models';
-import { FirebaseModule } from '../../../fire-ngine/src/modules';
 
 import { routes } from './app.routes';
-import { libConfig } from './core/configs/lib.config';
 import { environment } from '../../environments/environment';
+// import { ENV_CONFIG } from '../../../fire-ngine/src/models';
 
 
-export const appConfig: ApplicationConfig = {
+export const ngConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),
-    {
-      provide: ENV_CONFIG,
-      useValue: environment,
-    },
-    {
-      provide: LIB_CONFIG,
-      useValue: libConfig
-    },
-    importProvidersFrom(FirebaseModule)
+    // {
+    //   provide: ENV_CONFIG,
+    //   useValue: environment,
+    // },
+    // {
+    //   provide: APP_CONFIG,
+    //   useValue: appConfig
+    // },
+    // importProvidersFrom(FirebaseModule)
   ]
 };

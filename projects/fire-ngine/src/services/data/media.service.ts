@@ -16,7 +16,7 @@ import { EntityRepository } from "src/app/styleguide/modules/library/services/en
 import { SECTION_CONFIG } from "src/app/styleguide/services/app.providers";
 import { AppService } from "src/app/styleguide/services/app.service";
 import { NotificationService } from "src/app/styleguide/services/notification.service";
-import { DropzoneDialogComponent } from "../../library/components/organisms/dropzone-dialog/dropzone-dialog.component";
+import { DropzoneModalComponent } from "../../library/components/organisms/dropzone-dialog/dropzone-dialog.component";
 import { Entity } from "functions/src/styleguide/models";
 
 // ===================== DEFINITIONS =====================
@@ -45,7 +45,7 @@ export class MediaService {
 
   public bulkAddFiles$(url: UrlParams) {
     const dialogRef = this.dialog.open(
-      DropzoneDialogComponent, {
+      DropzoneModalComponent, {
       width: '88vh',
       height: '88vh',
       data: {

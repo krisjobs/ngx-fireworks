@@ -1,48 +1,39 @@
 import { Inject, Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
-import { BehaviorSubject, combineLatest, filter, from, map, NEVER, Observable, of, switchMap, tap } from 'rxjs';
 
-// ===================== MODELS =====================
+import { Entity, EntityTimestamp, Timestamp } from '../../common/models'
+import { AuthService } from '..';
 
-import {
-  Entity, StarRating
-} from 'functions/src/styleguide/models';
 
-import {
-  SortType, PaginationState, SectionConfig, ModalData,
-  ViewSettings, QuerySettings, EntityAction, EntityConfig,
-  PanelData, SortSettings, UrlParams
-} from 'src/app/styleguide';
-
-// ===================== UTILITY =====================
-
-import { environment } from 'src/environments/environment';
-
-import { getParamsFromUrl } from 'src/app/styleguide/utility';
-
-// ===================== SERVICES =====================
-
-import { SECTION_CONFIG } from 'src/app/styleguide/services/app.providers';
-import { NotificationService } from 'src/app/styleguide/services/notification.service';
-import { EntityRepository } from './repository.service';
-import { UserService } from '../../users/services/user.service';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { AppService } from 'src/app/styleguide/services/app.service';
-import { AuthService } from '../../firebase/services/auth.service';
-
-// ===================== COMPONENTS =====================
-
-import { PanelComponent } from '../components/organisms/config-sheet/config-sheet.component';
-import { ModalComponent } from '../components/organisms/crud-dialog/crud-dialog.component';
-
-// ===================== DEFINITIONS =====================
-
-/**
- * * if you can import EntityService <=> you have access to entityConfig
- */
 @Injectable()
 export class EntityService {
+
+  public createNewEntityDialog(entity?: Partial<Entity>, customData?: Partial<ModalData>) {
+    const parentConfig = customData?.config;
+    const newEntity = this.generateRawEntity(customData?.context?.query!, !!customData?.sectionAsType);
+
+    console.warn('createNewEntityDialog ===>\n', newEntity, entity)
+
+    const dialogData = {
+      operation: 'create',
+      entity: {
+        ...newEntity,
+        ...entity,
+      },
+      newId: entity?.id ?? newEntity.id,
+      title: `${!!entity ? 'Copy' : 'Create new'} ${!parentConfig ? this.entityConfig.displayName : parentConfig[0].tabs[parentConfig[1]].displayName}`,
+      steps: !parentConfig ? this.entityConfig.formSteps : parentConfig[0].tabs[parentConfig[1]].formSteps,
+      ...customData
+    } as ModalData;
+
+    this.openCrudDialog(dialogData);
+  }
+
+
+
+
+
+
 
 
 
@@ -66,8 +57,7 @@ export class EntityService {
     private appService: AppService,
     private notificationService: NotificationService,
     private repository: EntityRepository,
-    private dialog: MatDialog,
-    private sheet: MatBottomSheet,
+
   ) {
   }
 
@@ -75,18 +65,12 @@ export class EntityService {
 
 
 
-  public generateRawEntity(parent?: Entity, sectionAsType = false): Partial<Entity> {
-    const now = EntityTimestamp.now();
 
-    if (!this.authService.currentUser) {
-      const message = 'You are not authorozied for this operation';
-      this.notificationService.error(message);
-      throw new Error(message);
-    }
-
-    // const reminderDate = new Date();
-    // reminderDate.setFullYear(nowDate.getFullYear() + 1);
-    // const reminder = EntityTimestamp.fromDate(reminderDate);
+  public generateRawEntity(
+    parent?: Entity,
+    sectionAsType = false
+  ): Entity {
+    const now = Timestamp.now();
 
     const targetPath = `${this.entityConfig.firestorePath}`;
     const targetId = this.repository.getNewDocId(targetPath);
@@ -124,26 +108,7 @@ export class EntityService {
     } as Partial<Entity>;
   }
 
-  public createNewEntityDialog(entity?: Partial<Entity>, customData?: Partial<ModalData>) {
-    const parentConfig = customData?.config;
-    const newEntity = this.generateRawEntity(customData?.context?.query!, !!customData?.sectionAsType);
 
-    console.warn('createNewEntityDialog ===>\n', newEntity, entity)
-
-    const dialogData = {
-      operation: 'create',
-      entity: {
-        ...newEntity,
-        ...entity,
-      },
-      newId: entity?.id ?? newEntity.id,
-      title: `${!!entity ? 'Copy' : 'Create new'} ${!parentConfig ? this.entityConfig.displayName : parentConfig[0].tabs[parentConfig[1]].displayName}`,
-      steps: !parentConfig ? this.entityConfig.formSteps : parentConfig[0].tabs[parentConfig[1]].formSteps,
-      ...customData
-    } as ModalData;
-
-    this.openCrudDialog(dialogData);
-  }
 
   public editEntityDialog(entity: Entity, customData?: Partial<ModalData>) {
     const now = EntityTimestamp.now();

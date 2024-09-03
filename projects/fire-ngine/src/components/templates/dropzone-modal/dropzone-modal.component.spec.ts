@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ModalComponent } from './modal.component';
+import { DropzoneModalComponent } from './dropzone-modal.component';
 
-describe('SaveDialogComponent', () => {
-  let component: ModalComponent;
-  let fixture: ComponentFixture<ModalComponent>;
+describe('DropzoneModalComponent', () => {
+  let component: DropzoneModalComponent;
+  let fixture: ComponentFixture<DropzoneModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ModalComponent]
+      declarations: [DropzoneModalComponent]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ModalComponent);
+    fixture = TestBed.createComponent(DropzoneModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -11,8 +11,9 @@ export interface PaginationSettings {
   querySize: number;
   pageSize: number;
   pageIndex: number;
-  lastPageIndex: number | undefined;
-  anchorHead: boolean | undefined;
+
+  lastPageIndex?: number;
+  anchorHead?: boolean;
   // queryHead?: QueryDocumentSnapshot;
   // queryTail?: QueryDocumentSnapshot;
 };

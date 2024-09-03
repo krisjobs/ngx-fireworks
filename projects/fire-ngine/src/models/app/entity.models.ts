@@ -1,16 +1,19 @@
 import {
-  ChipConfig, DataViewMode, EntityAction, FormField, FormStep,
-  GridCard, IconConfig, PanelData, QueryFilter, QuerySettings,
-  SelectOption, TableColumn, TabProps, ViewSettings
+  ChipConfig, ConfigParams, DataViewMode, EntityAction, FormField, FormStep,
+  GridCard, IconConfig, QueryFilter, QuerySettings,
+  SelectOption, StepProps, TableColumn, TabProps, ViewSettings
 } from "..";
+import { Entity } from "../../common/models";
 
 
-export interface EntityConfigParams {
-  userRoles: string[];
+export type EntityOperation = 'create' | 'update' | 'copy' | 'archive' | 'delete';
 
-  entityId: string;
+export interface EntityConfigParams extends ConfigParams {
+  entity: Entity;
+  auxEntity: Entity;
 
-  parentId: string;
+  entities: Entity[];
+  auxEntities: Entity[];
 };
 
 export interface EntityActionsConfig {
@@ -82,13 +85,26 @@ export interface EntityConfig {
   /**
    * path to entity firestore collection
    */
-  firestorePath?: (params: Partial<EntityConfigParams>) => string;
+  firestorePath: (params?: Partial<EntityConfigParams>) => string;
 
   /**
    * db filters that are applied to a tab/form step
    * encompasses getGlobalData + finalFilters
    */
   entityFilters?: (params: Partial<EntityConfigParams>) => QueryFilter[];
+
+  /**
+  * entity ids in a particular order used in actions
+  * map of action id to entity ids
+  * first entity (0-index) is the default entity
+  * remaining entities could be used in form steps
+  */
+  templates?: Record<string, string[]>;
+
+  /**
+   * entity builder function when creating new entities from
+   */
+  assemblyStrategy?: (params: Partial<EntityConfigParams>) => Entity;
 
   /**
    * encompasses all action types
@@ -121,9 +137,14 @@ export interface EntityConfig {
   querySettings: QuerySettings;
 
   /**
-   * display config for tabs
+   * display config for section tabs
    */
   tabProps?: TabProps;
+
+  /**
+   * display config for modal steps
+   */
+  stepProps?: StepProps;
 
   /**
    * display config for panels

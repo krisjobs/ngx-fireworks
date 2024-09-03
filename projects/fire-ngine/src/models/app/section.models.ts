@@ -1,10 +1,10 @@
 import { InjectionToken } from "@angular/core";
 
-import { QueryFilter, IconConfig } from "..";
+import { QueryFilter, IconConfig, ConfigParams } from "..";
 
 
-export interface SectionConfigParams {
-  userRoles: string[];
+export interface SectionConfigParams extends ConfigParams {
+  test: string;
 }
 
 export interface SectionConfig {
@@ -12,6 +12,11 @@ export interface SectionConfig {
    * should be the same as what is used in the module config
    */
   sectionId: string; //
+
+  /**
+   * unique url path segment
+   */
+  urlSegment: string;
 
   /**
    * display name in nav links
@@ -24,6 +29,11 @@ export interface SectionConfig {
   icon?: IconConfig;
 
   /**
+   * nesting of sections, no restrictions on depth
+   */
+  subsections: SectionConfig[];
+
+  /**
    * db filters that are applied to all tabs
    */
   sectionFilters?: QueryFilter[];
@@ -32,20 +42,10 @@ export interface SectionConfig {
    * entity ids in a particular order used in section tabs
    * should containt at least one <=> no tabs
    */
-  tabs: string[]; // at least 1
+  tabs?: string[]; // at least 1
 
   /**
    * entity ids used with firestore operations (copy/delete)
    */
   children?: string[];
-
-  /**
-  * entity ids in a particular order used in actions
-  * map of action id to entity ids
-  * first entity (0-index) is the default entity
-  * remaining entities could be used in form steps
-  */
-  templates?: Record<string, string[]>;
 };
-
-export const SECTION_CONFIG = new InjectionToken<SectionConfig>('sectionConfig');

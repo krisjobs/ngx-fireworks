@@ -1,5 +1,5 @@
 import { Entity } from "../../common/models";
-import { ConfigParams, ModalData, UrlEntities, UrlParams } from "..";
+import { ConfigParams, ModalData } from "..";
 
 
 export type IconType = "outlined" | "filled" | "round";

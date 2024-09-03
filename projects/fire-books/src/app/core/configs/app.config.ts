@@ -1,27 +1,32 @@
-import { LibConfig, ModuleConfig } from "../../../../../fire-ngine/src/models";
+import { AppConfig, ModuleConfig } from "../../../../../fire-ngine/src/models";
 import { UserRole } from "../../../../../fire-ngine/src/common/models";
 
 export const version = '0.0.1';
 
 export const modules: ModuleConfig[] = [
   {
-    routerLink: ['books'],
+    urlSegment: 'books',
+    sectionIds: [],
     displayName: 'Books'
   },
   {
-    routerLink: ['lunch'],
+    urlSegment: 'lunch',
+    sectionIds: [],
     displayName: 'Lunch'
   },
   {
-    routerLink: ['chess'],
+    urlSegment: 'chess',
+    sectionIds: [],
     displayName: 'Chess'
   },
   {
-    routerLink: ['fitness'],
+    urlSegment: 'fitness',
+    sectionIds: [],
     displayName: 'Fitness'
   },
   {
-    routerLink: ['admin'],
+    urlSegment: 'admin',
+    sectionIds: [],
     displayName: 'Admin',
     hiddenFromSidenav: ({
       userRoles = []
@@ -32,7 +37,7 @@ export const modules: ModuleConfig[] = [
   }
 ];
 
-export const libConfig: LibConfig = {
+export const appConfig: AppConfig = {
   ports: {
     auth: 4302,
     firestore: 4303,
@@ -41,5 +46,7 @@ export const libConfig: LibConfig = {
     pubsub: 4306,
   },
   version,
-  modules
+  modules,
+  entities: {},
+  sections: {}
 }

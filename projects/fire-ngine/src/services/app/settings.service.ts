@@ -1,12 +1,35 @@
-import { Injectable, signal } from "@angular/core";
-import { LocalStorageSettings } from "../../models/data/state.models";
+import { Inject, Injectable, signal } from "@angular/core";
+
+import { APP_CONFIG, AppConfig, QuerySettings } from "../../models";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
 
+  // private activeModuleId = signal<string | null>(null);
+  private $activeSectionId = signal<string | null>(null);
+  private $activeEntityId = signal<string | null>(null);
 
+  public $querySettings: Record<string, typeof signal<QuerySettings>> = {};
+
+  constructor(
+    @Inject(APP_CONFIG) private appConfig: AppConfig,
+  ) {
+    for (const sectionId in this.appConfig.sections) {
+      this.$querySettings[sectionId] = signal<QuerySettings>({
+        paginator: {
+          querySize: 10,
+          pageIndex: 0,
+          pageSize: 10,
+        },
+        filters: [],
+        tabFilters: [],
+        sectionFilters: [],
+        viewFilters: {}
+      });
+    }
+  }
 
 
 
@@ -85,11 +108,6 @@ export class SettingsService {
 
   public set settings(settings: LocalStorageSettings) {
     this.$settings.set(settings);
-  }
-
-  constructor(
-    @Inject(SECTION_CONFIG) private sectionConfig: SectionConfig,
-  ) {
   }
 
   setItem(key: string, value: any) {

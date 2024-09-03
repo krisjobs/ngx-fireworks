@@ -8,7 +8,7 @@ import { MatStepper } from '@angular/material/stepper';
 
 // ===================== MODELS =====================
 
-import { SectionConfig, ModalData, CrudOperation, FormStep, QuerySettings, UrlEntities, UrlParams } from 'src/app/styleguide';
+import { SectionConfig, ModalData, EntityOperation, FormStep, QuerySettings, UrlEntities, UrlParams } from 'src/app/styleguide';
 import { Entity, User } from 'functions/src/styleguide/models';
 
 // ===================== UTILITY =====================
@@ -25,10 +25,10 @@ import { AppService } from 'src/app/styleguide/services/app.service';
 
 
 @Component({
-  selector: 'fng-modal',
+  selector: 'fng-save-modal',
   standalone: true,
-  templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss'],
+  templateUrl: './save-modal.component.html',
+  styleUrls: ['./save-modal.component.scss'],
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,
@@ -36,7 +36,7 @@ import { AppService } from 'src/app/styleguide/services/app.service';
     },
   ]
 })
-export class ModalComponent implements OnInit {
+export class SaveModalComponent implements OnInit {
 
   public userRoles$ = this.authService.userRoles$$;
 
@@ -90,7 +90,7 @@ export class ModalComponent implements OnInit {
     return this.operation === 'delete';
   }
 
-  public get operation(): CrudOperation {
+  public get operation(): EntityOperation {
     return this.dialogData.operation;
   }
 

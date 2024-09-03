@@ -8,7 +8,7 @@ import { outputFromObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MainComponent } from '../../templates/main/main.component';
 import { HeaderComponent } from '../../templates/header/header.component';
 import { FooterComponent } from '../../templates/footer/footer.component';
-import { ModuleConfig, ModuleConfigParams, LIB_CONFIG, LibConfig } from '../../../models';
+import { ModuleConfig, ModuleConfigParams, APP_CONFIG, AppConfig } from '../../../models';
 import { AuthService, CoreService } from '../../../services';
 import { fromEvent, debounceTime, map, filter, tap, startWith, EMPTY } from 'rxjs';
 
@@ -37,7 +37,7 @@ export class LayoutComponent implements OnInit {
   @ViewChild(MatSidenav)
   public sidenav!: MatSidenav;
 
-  private $userRoles = toSignal(this.authService.userRoles$$);
+  private $userRoles = this.authService.$userRoles;
 
   private $moduleConfigParams: Signal<Partial<ModuleConfigParams>> = computed(() => {
     const userRoles = this.$userRoles();
@@ -51,7 +51,7 @@ export class LayoutComponent implements OnInit {
   });
 
   private get modules (): ModuleConfig[] {
-    return this.libConfig.modules;
+    return this.AppConfig.modules;
   }
 
   public $modules = computed(() => {
@@ -93,7 +93,7 @@ export class LayoutComponent implements OnInit {
     private coreService: CoreService,
 
     private authService: AuthService,
-    @Inject(LIB_CONFIG) private libConfig: LibConfig,
+    @Inject(APP_CONFIG) private AppConfig: AppConfig,
   ) {
   }
 

@@ -30,6 +30,10 @@ export { SheetComponent } from './organisms/sheet/sheet.component';
 // export { GridComponent } from './organisms/grid/grid.component';
 // export { TableComponent } from './organisms/table/table.component';
 
+export { SaveModalComponent } from './templates/save-modal/save-modal.component';
+export { RemoveModalComponent } from './templates/remove-modal/remove-modal.component';
+export { DropzoneModalComponent } from './templates/dropzone-modal/dropzone-modal.component';
+
 // ===================== TEMPLATES =====================
 
 export { CookiesComponent } from './templates/cookies/cookies.component';
@@ -43,7 +47,6 @@ export { FreeformViewComponent } from './templates/freeform-view/freeform-view.c
 // export { DataViewComponent } from './templates/data-view/data-view.component';
 
 // export { ModuleComponent } from './templates/module/module.component';
-// export { ModalComponent } from './templates/modal/modal.component';
 // export { PanelComponent } from './templates/panel/panel.component';
 
 // ===================== PAGES =====================

@@ -1,5 +1,11 @@
 import { Injectable, signal } from '@angular/core';
 import { Observable, of, tap, concatMap, take, finalize } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+
+import { DropzoneModalComponent, RemoveModalComponent, SaveModalComponent } from '../../components';
+import { Entity } from '../../common/models';
+
 
 @Injectable({
   providedIn: 'root'
@@ -33,21 +39,52 @@ export class CoreService {
     this.$appWidth.set(width);
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-  constructor() {
+  constructor(
+    private dialog: MatDialog,
+    private sheet: MatBottomSheet
+  ) {
 
   }
+
+  public openSaveModal(rawEntity: Entity): Observable<Entity> {
+    const dialogRef = this.dialog.open(
+      SaveModalComponent, {
+      data: {
+        rawEntity
+      }
+    });
+
+    return dialogRef.afterClosed();
+  }
+
+  public openRemoveModal() {
+    const dialogRef = this.dialog.open(
+      RemoveModalComponent, {
+      data: {
+      }
+    });
+
+    return dialogRef.afterClosed();
+  }
+
+  public openDropzoneModal() {
+    const dialogRef = this.dialog.open(
+      DropzoneModalComponent, {
+      data: {
+      }
+    });
+
+    return dialogRef.afterClosed();
+  }
+
+
+
+
+
+
+
+
+
 
   public toggleLoading() {
     this.$loading.set(!this.$loading());
@@ -68,9 +105,9 @@ export class CoreService {
   }
 
 
-  public openCrudDialog(dialogData: ModalData) {
+  public openSaveModal(dialogData: ModalData) {
     const dialogRef = this.dialog.open(
-      ModalComponent, {
+      SaveModalComponent, {
       data: dialogData
     });
 

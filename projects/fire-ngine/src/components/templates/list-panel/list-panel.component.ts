@@ -18,12 +18,12 @@ import { EntityService } from '../../../services/entity.service';
 // ===================== DEFINITIONS =====================
 
 @Component({
-  selector: 'fng-panel',
+  selector: 'fng-list-panel',
   standalone: true,
-  templateUrl: './panel.component.html',
-  styleUrls: ['./panel.component.scss']
+  templateUrl: './list-panel.component.html',
+  styleUrls: ['./list-panel.component.scss']
 })
-export class PanelComponent implements OnInit {
+export class ListPanelComponent implements OnInit {
 
   public formGroup!: FormGroup;
 
